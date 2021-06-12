@@ -41,11 +41,6 @@ float GetDist(vec3 p) {
     return d_g;
 }
 
-float GetDist(vec3 p, float scaleA, float scaleB) {
-    float d_g = sdGyroid(p, scaleB * sdGyroid(p, scaleA) );
-    return d_g;
-}
-
 float GetDist(vec2 p) {
     return GetDist(vec3(p, 0.));
 }

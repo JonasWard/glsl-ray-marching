@@ -17,24 +17,19 @@ var userInput = new function() {
     this.reset = false;
 }
 
-var constructFragShader = function() {
-    shader = '';
-    tpmsShaderA = '';
-    tpmsShaderSDF = '';
-    tpmsShaderB = '';
-    jQuery.get("Shaders/tpmsShaderPartA", function(txt){
-        shader.concat(txt);
-    });
-    jQuery.get("Shaders/tpmsShaderPartSDF", function(txt){
-        shader.concat(txt);
-    });
-    jQuery.get("Shaders/tpmsShaderPartB", function(txt){
-        shader.concat(txt);
-    });
-    // tpmsShaderSDF = document.getElementById('tpmsShaderSDF');
-    // tpmsShaderB = document.getElementById('tpmsShaderB');
+var constructFragShader = function(sdfString = null) {
+    var shader = '';
+    var tpmsShaderA = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartA", async: false}).responseText;
+    if (sdfString == null) {
+        var tpmsShaderSDF = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartSDF", async: false}).responseText;
+    } else {
+        var tpmsShaderSDF = sdfString;
+    }
 
-    console.log(shader);
+    var tpmsShaderB = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartB", async: false}).responseText;
+
+    shader = tpmsShaderA + tpmsShaderSDF + tpmsShaderB;
+
     return shader;
 }
 
@@ -44,7 +39,8 @@ var start = function () {
     // Initialize the WebGL 2.0 canvas
     initCanvas();
 
-    console.log(constructFragShader());
+    var newFragShader = constructFragShader();
+    console.log(newFragShader);
 
     //tiff export
     const saveBlob = (function () {
@@ -71,7 +67,7 @@ var start = function () {
     timer = new Timer();
 
     // Read in, compile, and create a shader program
-    shaderProgram = new Shader('vertShader', 'fragShader');
+    shaderProgram = new Shader('vertShader', newFragShader);
     // Activate the shader program
     shaderProgram.UseProgram();
 
@@ -94,13 +90,6 @@ var start = function () {
     drawScene();
 };
 
-function zoomin() {
-    userInput.zoomLevel *= 1.1;
-}
-function zoomout() {
-    userInput.zoomLevel *= 0.9;
-}
-
 var activePosition = function(origin, zoomLevel, mD) {
     p = [
         origin[0] + mD[0] / zoomLevel,
@@ -122,12 +111,22 @@ var initCanvas = function () {
 
     canvas.addEventListener('wheel', function (event) {
         console.log(event.deltaY);
-        if (event.deltaY < 0) {
-            zoomin();
+        if (event.shiftKey) {
+            if (event.deltaY < 0) {
+                userInput.rotation += 0.01;
+            }
+            else if (event.deltaY > 0) {
+                userInput.rotation -= 0.01;
+            }
+        } else {
+            if (event.deltaY < 0) {
+                userInput.zoomLevel *= 1.1;
+            }
+            else if (event.deltaY > 0) {
+                userInput.zoomLevel *= .9;
+            }
         }
-        else if (event.deltaY > 0) {
-            zoomout();
-        }
+
     });
 
     mousedDownActive=false;

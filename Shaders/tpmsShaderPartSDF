@@ -1,1 +1,3 @@
-    float d_g = sdGyroid(p, scaleB * sdGyroid(p, scaleA) );
+
+    // float d_g = sdGyroid(p, fScales.x );
+    float d_g = sdGyroid(p, fScales.x);

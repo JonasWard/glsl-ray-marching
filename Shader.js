@@ -2,12 +2,12 @@ var shaderText = '';
 
 class Shader
 {
-    constructor(vertShaderId, fragShaderId)
+    constructor(vertShaderId, fragShaderString)
     {
         this.shaderProgram = gl.createProgram();
 
         var vertexShader = this.getShader(gl, vertShaderId);
-        var fragmentShader = this.getShader(gl, fragShaderId);
+        var fragmentShader = this.strFragShader(gl, fragShaderString);
     
         gl.attachShader(this.shaderProgram, vertexShader);
         gl.attachShader(this.shaderProgram, fragmentShader);
@@ -23,6 +23,22 @@ class Shader
      * @param {WebGLRenderingContext} gl Current WebGL rendering context
      * @param {HTML Class ID} id Class ID of the shader in the active DOM 
      */
+    strFragShader(gl, string) {
+        var shader;
+
+        shader = gl.createShader(gl.FRAGMENT_SHADER);
+
+        gl.shaderSource(shader, string);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            alert(gl.getShaderInfoLog(shader));
+            return null;
+        }
+
+        return shader;
+    }
+
     getShader(gl, id) {
         var shaderScript = document.getElementById(id);
         if (!shaderScript) {
