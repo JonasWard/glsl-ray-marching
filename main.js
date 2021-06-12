@@ -17,18 +17,68 @@ var userInput = new function() {
     this.reset = false;
 }
 
+var sdfDict = {
+    "gyroid": "sdGyroid",
+    "schwarzD": "sdSchwarzD",
+    "schwarzP": "sdSchwarzP",
+    "none": null
+}
+
+var functions = new function() {
+    this.f1 = "gyroid";
+    this.f2 = "schwarzD";
+    this.f3 = "schwarzP";
+}
+
+var constructSDFData = function(f1, f2, f3) {
+    var sdf_string = '';
+
+    if (!(sdfDict[f3] == null)) {
+        sdf_string = sdfDict[f3] + "(p, fScales.z)";
+    }
+
+    if (!(sdfDict[f2] == null)) {
+        if (!(sdf_string.length == 0)) {
+            sdf_string = sdfDict[f2] + "(p, fScales.y * " + sdf_string + ")";
+        } else {
+            sdf_string = sdfDict[f2] + "(p, fScales.y)";
+        }
+    }
+
+    if (!(sdfDict[f1] == null)) {
+        if (!(sdf_string.length == 0)) {
+            sdf_string = sdfDict[f1] + "(p, fScales.x * " + sdf_string + ")";
+        } else {
+            sdf_string = sdfDict[f1] + "(p, fScales.x)";
+        }
+    }
+
+    if (sdf_string.length == 0) {
+        sdf_string = "1.";
+    }
+
+    sdf_string = "\n\treturn " + sdf_string + ";\n";
+    console.log(sdf_string);
+
+    return sdf_string;
+}
+
 var constructFragShader = function(sdfString = null) {
     var shader = '';
     var tpmsShaderA = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartA", async: false}).responseText;
     if (sdfString == null) {
+        console.log("null string");
         var tpmsShaderSDF = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartSDF", async: false}).responseText;
     } else {
+        console.log("given string");
         var tpmsShaderSDF = sdfString;
     }
 
     var tpmsShaderB = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartB", async: false}).responseText;
 
     shader = tpmsShaderA + tpmsShaderSDF + tpmsShaderB;
+
+    console.log(shader);
 
     return shader;
 }
@@ -39,8 +89,7 @@ var start = function () {
     // Initialize the WebGL 2.0 canvas
     initCanvas();
 
-    var newFragShader = constructFragShader();
-    console.log(newFragShader);
+    var newFragShader = constructFragShader(constructSDFData(functions.f1, functions.f2, functions.f3));
 
     //tiff export
     const saveBlob = (function () {
@@ -99,6 +148,13 @@ var activePosition = function(origin, zoomLevel, mD) {
     return p;
 }
 
+function switchShader() {
+    var newFragShader = constructFragShader(constructSDFData(functions.f1, functions.f2, functions.f3));
+
+    shaderProgram = new Shader('vertShader', newFragShader);
+    shaderProgram.UseProgram();
+}
+
 // starts the canvas and gl
 var initCanvas = function () {
     canvas = document.getElementById('game-surface');
@@ -107,7 +163,6 @@ var initCanvas = function () {
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    gl.pres
 
     canvas.addEventListener('wheel', function (event) {
         console.log(event.deltaY);
@@ -164,11 +219,26 @@ var initCanvas = function () {
     scalesData.add(scales, 'gyroidB', -3.00, 5.00);
     scalesData.add(scales, 'gyroidC', -3.00, 5.00);
 
+    var functionNames = ["gyroid", "schwarzD", "schwarzP", "none"];
+
+    var functionDiscriptions = gui.addFolder('functions');
+    var function1 = functionDiscriptions.addFolder('first function');
+    function1.add(functions, 'f1', functionNames).onChange( function () {
+        switchShader();
+    });
+    var function2 = functionDiscriptions.addFolder('second function');
+    function2.add(functions, 'f2', functionNames).onChange( function () {
+        switchShader();
+    });
+    var function3 = functionDiscriptions.addFolder('third function');
+    function3.add(functions, 'f3', functionNames).onChange( function () {
+        switchShader();
+    });
+
     var adjustables = gui.addFolder('user input');
     adjustables.add(userInput, 'rotation', -3.1415927, 3.1415927);
     adjustables.add(userInput, 'reset');
 }
-
 
 var drawScene = function () {
     normalSceneFrame = window.requestAnimationFrame(drawScene);
@@ -189,6 +259,8 @@ var drawScene = function () {
 
     // Update the timer
     timer.Update();
+
+    // console.log();
 
     if (userInput.reset) {
         console.log("reseting parameters");

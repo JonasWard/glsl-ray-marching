@@ -1,5 +1,4 @@
 
-    return d_g;
 }
 
 float GetDist(vec2 p) {

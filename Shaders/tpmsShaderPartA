@@ -36,4 +36,21 @@ float sdGyroid(vec3 p, float scale) {
 	return d;
 }
 
+float sdSchwarzD(vec3 p, float scale) {
+    p *= scale;
+    vec3 s = sin(p);
+    vec3 c = cos(p);
+    float d = s.x * s.y * s.z + s.x * c.y * c.z + c.x * s.y * c.z + c.x * c.y * s.z;
+    d *= .3333;
+	return d;
+}
+
+float sdSchwarzP(vec3 p, float scale) {
+    p *= scale;
+    p = cos(p);
+    float d = p.x + p.y + p.z;
+    d *= .3333;
+	return d;
+}
+
 float GetDist(vec3 p) {
