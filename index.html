@@ -1,0 +1,70 @@
+<html>
+    <head>
+        <title>3D Fractals.js</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background:#777;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				color: #353535;
+				padding: 5px;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				z-index:1000;
+			}
+			.head {position: fixed; font-size: 25px}
+			.dg.main .close-button {
+				background-color: rgb(255, 0, 255);
+			}
+			.ui { 
+				position : fixed;
+				display: inline-block;
+				margin: 0.5em 0.5em 0.5em 0.5em;
+				border-radius:0.12em;
+				border: 0.1em solid #FFFFFF;
+				color: white;
+				background: transparent; 
+				padding: 0.35em 1.2em;
+				text-align: center;
+				box-sizing: border-box;
+				text-decoration:none;
+				font-family:'Roboto',sans-serif;
+				font-weight:300;
+				font-size: 0.9em;
+				cursor: pointer;
+			}
+			.ui:hover {
+			color:#000000;
+			background-color: #FFFFFF;
+			}
+
+			 
+		</style>
+    </head>
+    <body onload = "start();">
+		<canvas id="game-surface" style="width: 100vw; height: 100vh; display: block;">
+			Your browser does not support HTML5
+		</canvas>
+
+		<script id="vertShader" type="x-shader/x-vertex" src="./Shaders/vertexShader.glsl"></script>
+		<script id="fragShader" type="x-shader/x-fragment" src="./Shaders/tpms.glsl"></script>
+
+		<script type="text/javascript" src="./Mesh.js"></script>
+		<script type="text/javascript" src="./Shader.js"></script>
+		<script type="text/javascript" src="./Timer.js"></script>
+		<script src="./dat.gui.js"></script>
+		<script src="./canvastotiff.min.js"></script>
+		<script type="text/javascript" src="./main.js"></script>
+		<button style="right: 45%; bottom:0px;" id = "save" class="ui">EXPORT TO TIFF</button>
+
+    </body>
+</html>
