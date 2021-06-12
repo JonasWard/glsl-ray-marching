@@ -17,11 +17,34 @@ var userInput = new function() {
     this.reset = false;
 }
 
+var constructFragShader = function() {
+    shader = '';
+    tpmsShaderA = '';
+    tpmsShaderSDF = '';
+    tpmsShaderB = '';
+    jQuery.get("Shaders/tpmsShaderPartA", function(txt){
+        shader.concat(txt);
+    });
+    jQuery.get("Shaders/tpmsShaderPartSDF", function(txt){
+        shader.concat(txt);
+    });
+    jQuery.get("Shaders/tpmsShaderPartB", function(txt){
+        shader.concat(txt);
+    });
+    // tpmsShaderSDF = document.getElementById('tpmsShaderSDF');
+    // tpmsShaderB = document.getElementById('tpmsShaderB');
+
+    console.log(shader);
+    return shader;
+}
+
 // start() is the main function that gets called first by index.html
 var start = function () {
 
     // Initialize the WebGL 2.0 canvas
     initCanvas();
+
+    console.log(constructFragShader());
 
     //tiff export
     const saveBlob = (function () {

@@ -1,0 +1,1 @@
+    float d_g = sdGyroid(p, scaleB * sdGyroid(p, scaleA) );

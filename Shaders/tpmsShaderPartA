@@ -1,0 +1,44 @@
+// webgl link
+precision mediump float;
+
+uniform float time;
+
+
+// Gyroid Marching
+const float tau = 6.2831853072;
+const float staticZ = 0.;
+
+// // general transformation
+// uniform vec3 mvVec;
+// uniform float alpha;
+
+// function parameters
+uniform vec3 fScales;
+
+// color scheme
+const vec3 color1 = vec3(0., 0., 1.);
+const vec3 color2 = vec3(1., 0., 0.);
+
+// user interraction
+uniform vec2 mousePosition;
+uniform float zoomLevel;
+uniform float rotation;
+uniform vec2 base;
+
+// other static input parameters
+const vec3 mvVec = vec3(0.);
+const float alpha = 1.;
+
+float sdGyroid(vec3 p, float scale) {
+    p *= scale;
+    float d = dot(sin(p), cos(p.yzx) );
+    d *= .3333;
+	return d;
+}
+
+float GetDist(vec3 p) {
+    float d_g = sdGyroid(p, fScales.x * sdGyroid(p, fScales.y) );
+    return d_g;
+}
+
+float GetDist(vec3 p, float scaleA, float scaleB) {
