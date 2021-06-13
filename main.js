@@ -17,7 +17,11 @@ var userInput = new function() {
     this.reset = false;
 }
 
+var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "none"];
+
 var sdfDict = {
+    "sin": "sdSin",
+    "cos": "sdCos",
     "gyroid": "sdGyroid",
     "schwarzD": "sdSchwarzD",
     "schwarzP": "sdSchwarzP",
@@ -219,19 +223,14 @@ var initCanvas = function () {
     scalesData.add(scales, 'gyroidB', -3.00, 5.00);
     scalesData.add(scales, 'gyroidC', -3.00, 5.00);
 
-    var functionNames = ["gyroid", "schwarzD", "schwarzP", "none"];
-
     var functionDiscriptions = gui.addFolder('functions');
-    var function1 = functionDiscriptions.addFolder('first function');
-    function1.add(functions, 'f1', functionNames).onChange( function () {
+    functionDiscriptions.add(functions, 'f1', functionNames).onChange( function () {
         switchShader();
     });
-    var function2 = functionDiscriptions.addFolder('second function');
-    function2.add(functions, 'f2', functionNames).onChange( function () {
+    functionDiscriptions.add(functions, 'f2', functionNames).onChange( function () {
         switchShader();
     });
-    var function3 = functionDiscriptions.addFolder('third function');
-    function3.add(functions, 'f3', functionNames).onChange( function () {
+    functionDiscriptions.add(functions, 'f3', functionNames).onChange( function () {
         switchShader();
     });
 

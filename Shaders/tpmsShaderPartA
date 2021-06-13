@@ -29,6 +29,20 @@ uniform vec2 base;
 const vec3 mvVec = vec3(0.);
 const float alpha = 1.;
 
+float sdSin(vec3 p, float scale) {
+    p *= scale;
+    float d = length(sin(p));
+    d *= .5777; // 1 / sqrt(3)
+	return d;
+}
+
+float sdCos(vec3 p, float scale) {
+    p *= scale;
+    float d = length(cos(p));
+    d *= .5777; // 1 / sqrt(3)
+	return d;
+}
+
 float sdGyroid(vec3 p, float scale) {
     p *= scale;
     float d = dot(sin(p), cos(p.yzx) );
