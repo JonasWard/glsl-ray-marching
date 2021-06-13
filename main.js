@@ -1,9 +1,10 @@
 var mesh, timer, shaderProgram;
 
 var scales = new function () {
-    this.gyroidA = -1.80;
-    this.gyroidB = -1.00;
-    this.gyroidC = -1.00;
+    this.distanceA = -1.80;
+    this.distanceB = -1.00;
+    this.distanceC = -1.00;
+    this.postProcessing = 1.;
 }
 
 var userInput = new function() {
@@ -17,7 +18,9 @@ var userInput = new function() {
     this.reset = false;
 }
 
-var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "perlin", "none"];
+var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "perlin", "neovius", "none"];
+
+var postProcessing = ["sin", "cos", "none"];
 
 var sdfDict = {
     "sin": "sdSin",
@@ -25,6 +28,7 @@ var sdfDict = {
     "gyroid": "sdGyroid",
     "schwarzD": "sdSchwarzD",
     "schwarzP": "sdSchwarzP",
+    "neovius": "sdNeovius",
     "perlin": "sdPerlin",
     "none": null
 }
@@ -33,6 +37,7 @@ var functions = new function() {
     this.f1 = "gyroid";
     this.f2 = "schwarzD";
     this.f3 = "schwarzP";
+    this.post = "none";
 }
 
 var constructSDFData = function(f1, f2, f3) {
@@ -220,9 +225,10 @@ var initCanvas = function () {
     var gui = new dat.GUI();
 
     var scalesData = gui.addFolder('scales');
-    scalesData.add(scales, 'gyroidA', -3.00, 5.00);
-    scalesData.add(scales, 'gyroidB', -3.00, 5.00);
-    scalesData.add(scales, 'gyroidC', -3.00, 5.00);
+    scalesData.add(scales, 'distanceA', -3.00, 5.00);
+    scalesData.add(scales, 'distanceB', -3.00, 5.00);
+    scalesData.add(scales, 'distanceC', -3.00, 5.00);
+    scalesData.add(scales, 'postProcessing', -3.00, 5.00);
 
     var functionDiscriptions = gui.addFolder('functions');
     functionDiscriptions.add(functions, 'f1', functionNames).onChange( function () {
@@ -232,6 +238,9 @@ var initCanvas = function () {
         switchShader();
     });
     functionDiscriptions.add(functions, 'f3', functionNames).onChange( function () {
+        switchShader();
+    });
+    functionDiscriptions.add(functions, 'post', postProcessing).onChange( function () {
         switchShader();
     });
 
@@ -285,10 +294,12 @@ var drawScene = function () {
     shaderProgram.SetUniform1f("zoomLevel", userInput.zoomLevel);
 
     shaderProgram.SetUniformVec3("fScales", [
-        Math.pow(10., scales.gyroidA),
-        Math.pow(10., scales.gyroidB),
-        Math.pow(10., scales.gyroidC)
+        Math.pow(10., scales.distanceA),
+        Math.pow(10., scales.distanceB),
+        Math.pow(10., scales.distanceC)
     ]);
+
+    shaderProgram.SetUniform1f("ppScale", Math.pow(10., scales.distanceA));
 
     // Tell WebGL to draw the scene
     mesh.Draw();

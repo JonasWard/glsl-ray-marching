@@ -148,4 +148,10 @@ float sdSchwarzP(vec3 p, float scale) {
 	return d;
 }
 
+float sdNeovius(vec3 p, float scale) {
+    p *= scale;
+    p = cos(p);
+    return (3.*(p.x+p.y+p.z)+4.*p.x*p.y*p.z) * 0.0769; // 1/13. -> domain Neovius
+}
+
 float GetDist(vec3 p) {
