@@ -17,7 +17,7 @@ var userInput = new function() {
     this.reset = false;
 }
 
-var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "none"];
+var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "perlin", "none"];
 
 var sdfDict = {
     "sin": "sdSin",
@@ -25,6 +25,7 @@ var sdfDict = {
     "gyroid": "sdGyroid",
     "schwarzD": "sdSchwarzD",
     "schwarzP": "sdSchwarzP",
+    "perlin": "sdPerlin",
     "none": null
 }
 
