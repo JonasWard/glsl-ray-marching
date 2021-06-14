@@ -14,6 +14,7 @@ const float staticZ = 0.;
 
 // function parameters
 uniform vec3 fScales;
+uniform float ppScale;
 
 // color scheme
 const vec3 color1 = vec3(0., 0., 1.);

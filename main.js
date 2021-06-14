@@ -14,13 +14,19 @@ var userInput = new function() {
     this.mousePosition = [0., 0.];
     this.mouseDelta = [0., 0.];
     this.output = [0., 0.];
-    this.rotation = 0.;
+    this.rotation = 1.000;
     this.reset = false;
 }
 
 var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "perlin", "neovius", "none"];
 
 var postProcessing = ["sin", "cos", "none"];
+
+var postDict = {
+    "sin": "sin",
+    "cos": "cos",
+    "none": null
+}
 
 var sdfDict = {
     "sin": "sdSin",
@@ -40,7 +46,7 @@ var functions = new function() {
     this.post = "none";
 }
 
-var constructSDFData = function(f1, f2, f3) {
+var constructSDFData = function(f1, f2, f3, p) {
     var sdf_string = '';
 
     if (!(sdfDict[f3] == null)) {
@@ -60,6 +66,14 @@ var constructSDFData = function(f1, f2, f3) {
             sdf_string = sdfDict[f1] + "(p, fScales.x * " + sdf_string + ")";
         } else {
             sdf_string = sdfDict[f1] + "(p, fScales.x)";
+        }
+    }
+
+    if (!(postDict[p] == null)) {
+        if (!(sdf_string.length == 0)) {
+            sdf_string = postDict[p] + "(ppScale * " + sdf_string + ")";
+        } else {
+            sdf_string = "1.";
         }
     }
 
@@ -83,6 +97,8 @@ var constructFragShader = function(sdfString = null) {
         console.log("given string");
         var tpmsShaderSDF = sdfString;
     }
+
+    console.log(tpmsShaderSDF);
 
     var tpmsShaderB = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartB", async: false}).responseText;
 
@@ -159,7 +175,7 @@ var activePosition = function(origin, zoomLevel, mD) {
 }
 
 function switchShader() {
-    var newFragShader = constructFragShader(constructSDFData(functions.f1, functions.f2, functions.f3));
+    var newFragShader = constructFragShader(constructSDFData(functions.f1, functions.f2, functions.f3, functions.post));
 
     shaderProgram = new Shader('vertShader', newFragShader);
     shaderProgram.UseProgram();
@@ -175,23 +191,25 @@ var initCanvas = function () {
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
     canvas.addEventListener('wheel', function (event) {
-        console.log(event.deltaY);
+        wheelValue = event.deltaY;
+
         if (event.shiftKey) {
-            if (event.deltaY < 0) {
-                userInput.rotation += 0.01;
+            console.log("shift keying");
+            if (event.deltaX < 0) {
+                userInput.rotation += .1;
+            } else if (event.deltaX > 0) {
+                userInput.rotation -= .1;
             }
-            else if (event.deltaY > 0) {
-                userInput.rotation -= 0.01;
-            }
+
+            // console.log(userInput.rotation);
         } else {
+            console.log("not shift keying");
             if (event.deltaY < 0) {
                 userInput.zoomLevel *= 1.1;
-            }
-            else if (event.deltaY > 0) {
+            } else if (event.deltaY > 0) {
                 userInput.zoomLevel *= .9;
             }
         }
-
     });
 
     mousedDownActive=false;
@@ -246,7 +264,18 @@ var initCanvas = function () {
 
     var adjustables = gui.addFolder('user input');
     adjustables.add(userInput, 'rotation', -3.1415927, 3.1415927);
-    adjustables.add(userInput, 'reset');
+
+    userInput.reset = false;
+
+    var obj = { reset:function(){
+        console.log("reseting parameters");
+        userInput.output = [0., 0.];
+        userInput.origin = [0., 0.];
+        userInput.mousePosition = [0., 0.];
+        userInput.mouseDelta = [0., 0.];
+        userInput.zoomLevel = 1.;
+    }};
+    adjustables.add(obj, 'reset');
 }
 
 var drawScene = function () {
@@ -271,15 +300,6 @@ var drawScene = function () {
 
     // console.log();
 
-    if (userInput.reset) {
-        console.log("reseting parameters");
-        userInput.output = [0., 0.];
-        userInput.origin = [0., 0.];
-        userInput.mousePosition = [0., 0.];
-        userInput.mouseDelta = [0., 0.];
-        userInput.zoomLevel = 1.;
-    }
-
     // Set uniform values of the fragment shader
     shaderProgram.SetUniformVec2("resolution", [gl.canvas.width, gl.canvas.height]);
     shaderProgram.SetUniform1f("time", timer.GetTicksInRadians());
@@ -299,7 +319,7 @@ var drawScene = function () {
         Math.pow(10., scales.distanceC)
     ]);
 
-    shaderProgram.SetUniform1f("ppScale", Math.pow(10., scales.distanceA));
+    shaderProgram.SetUniform1f("ppScale", Math.pow(10., scales.postProcessing));
 
     // Tell WebGL to draw the scene
     mesh.Draw();
