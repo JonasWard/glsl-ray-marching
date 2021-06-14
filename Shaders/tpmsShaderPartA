@@ -111,6 +111,31 @@ float sdPerlin(vec3 p, float scale) {
     return d;
 }
 
+// mandelbrot
+vec2 complexMult(vec2 a, vec2 b) {
+	return vec2(a.x*b.x - a.y*b.y, a.x*b.y + a.y*b.x);
+}
+
+float testMandelbrot(vec2 coord) {
+    // turn this up to 5000 or so if you have a good gpu
+    // for better details but less vibrant color in extreme zoom
+    const int iterations = 912;
+	vec2 testPoint = vec2(0,0);
+	for (int i = 0; i < iterations; i++){
+		testPoint = complexMult(testPoint,testPoint) + coord;
+        float ndot = dot(testPoint,testPoint);
+		if (ndot > 45678.0) {
+            float sl = float(i) - log2(log2(ndot))+4.0;
+			return sl/float(iterations) * 2.5;
+		}
+	}
+	return 0.0;
+}
+
+float sdMandelbrot(vec3 p, float scale){
+    return testMandelbrot(vec2(p.x, p.y) * scale);
+}
+
 float sdSin(vec3 p, float scale) {
     p *= scale;
     float d = length(sin(p));

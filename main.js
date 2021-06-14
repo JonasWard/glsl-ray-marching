@@ -14,11 +14,11 @@ var userInput = new function() {
     this.mousePosition = [0., 0.];
     this.mouseDelta = [0., 0.];
     this.output = [0., 0.];
-    this.rotation = 1.000;
+    this.rotation = 0.000;
     this.reset = false;
 }
 
-var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "perlin", "neovius", "none"];
+var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "perlin", "neovius", "mandelbrot", "none"];
 
 var postProcessing = ["sin", "cos", "none"];
 
@@ -36,6 +36,7 @@ var sdfDict = {
     "schwarzP": "sdSchwarzP",
     "neovius": "sdNeovius",
     "perlin": "sdPerlin",
+    "mandelbrot": "sdMandelbrot",
     "none": null
 }
 
@@ -97,8 +98,6 @@ var constructFragShader = function(sdfString = null) {
         console.log("given string");
         var tpmsShaderSDF = sdfString;
     }
-
-    console.log(tpmsShaderSDF);
 
     var tpmsShaderB = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartB", async: false}).responseText;
 
