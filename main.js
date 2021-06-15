@@ -1,10 +1,11 @@
 var mesh, timer, shaderProgram;
 
 var scales = new function () {
+    this.preProcessing = 0.;
     this.distanceA = -1.80;
     this.distanceB = -1.00;
     this.distanceC = -1.00;
-    this.postProcessing = 1.;
+    this.postProcessing = 0.;
 }
 
 var userInput = new function() {
@@ -18,15 +19,17 @@ var userInput = new function() {
     this.reset = false;
 }
 
-var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "perlin", "neovius", "mandelbrot", "none"];
+var preProcessing = ["sin", "cos", "modTiling", "complexTiling", "none"];
 
-var postProcessing = ["sin", "cos", "none"];
-
-var postDict = {
+var preDict = {
     "sin": "sin",
     "cos": "cos",
+    "modTiling": "modulus",
+    "complexTiling": "complex",
     "none": null
 }
+
+var functionNames = ["sin", "cos", "gyroid", "schwarzD", "schwarzP", "perlin", "neovius", "mandelbrot", "none"];
 
 var sdfDict = {
     "sin": "sdSin",
@@ -40,14 +43,23 @@ var sdfDict = {
     "none": null
 }
 
+var postProcessing = ["sin", "cos", "none"];
+
+var postDict = {
+    "sin": "sin",
+    "cos": "cos",
+    "none": null
+}
+
 var functions = new function() {
+    this.pre = "none"
     this.f1 = "gyroid";
     this.f2 = "schwarzD";
     this.f3 = "schwarzP";
     this.post = "none";
 }
 
-var constructSDFData = function(f1, f2, f3, p) {
+var constructSDFData = function(pre, f1, f2, f3, post) {
     var sdf_string = '';
 
     if (!(sdfDict[f3] == null)) {
@@ -70,9 +82,9 @@ var constructSDFData = function(f1, f2, f3, p) {
         }
     }
 
-    if (!(postDict[p] == null)) {
+    if (!(postDict[post] == null)) {
         if (!(sdf_string.length == 0)) {
-            sdf_string = postDict[p] + "(ppScale * " + sdf_string + ")";
+            sdf_string = postDict[post] + "(ppScale * " + sdf_string + ")";
         } else {
             sdf_string = "1.";
         }
@@ -82,8 +94,12 @@ var constructSDFData = function(f1, f2, f3, p) {
         sdf_string = "1.";
     }
 
-    sdf_string = "\n\treturn " + sdf_string + ";\n";
-    console.log(sdf_string);
+    var pre_calc = '';
+    if (!(preDict[pre] == null)) {
+        pre_calc = "\n\tp = " + preDict[pre] + "(p * preScale) / preScale;\n";
+    }
+
+    sdf_string = pre_calc + "\n\treturn " + sdf_string + ";\n";
 
     return sdf_string;
 }
@@ -114,7 +130,7 @@ var start = function () {
     // Initialize the WebGL 2.0 canvas
     initCanvas();
 
-    var newFragShader = constructFragShader(constructSDFData(functions.f1, functions.f2, functions.f3));
+    var newFragShader = constructFragShader(constructSDFData(functions.pre, functions.f1, functions.f2, functions.f3, functions.post));
 
     //tiff export
     const saveBlob = (function () {
@@ -174,7 +190,7 @@ var activePosition = function(origin, zoomLevel, mD) {
 }
 
 function switchShader() {
-    var newFragShader = constructFragShader(constructSDFData(functions.f1, functions.f2, functions.f3, functions.post));
+    var newFragShader = constructFragShader(constructSDFData(functions.pre, functions.f1, functions.f2, functions.f3, functions.post));
 
     shaderProgram = new Shader('vertShader', newFragShader);
     shaderProgram.UseProgram();
@@ -242,12 +258,16 @@ var initCanvas = function () {
     var gui = new dat.GUI();
 
     var scalesData = gui.addFolder('scales');
+    scalesData.add(scales, 'preProcessing', -3.00, 5.00);
     scalesData.add(scales, 'distanceA', -3.00, 5.00);
     scalesData.add(scales, 'distanceB', -3.00, 5.00);
     scalesData.add(scales, 'distanceC', -3.00, 5.00);
     scalesData.add(scales, 'postProcessing', -3.00, 5.00);
 
     var functionDiscriptions = gui.addFolder('functions');
+    functionDiscriptions.add(functions, 'pre', preProcessing).onChange( function () {
+        switchShader();
+    });
     functionDiscriptions.add(functions, 'f1', functionNames).onChange( function () {
         switchShader();
     });
@@ -318,6 +338,7 @@ var drawScene = function () {
         Math.pow(10., scales.distanceC)
     ]);
 
+    shaderProgram.SetUniform1f("preScale", Math.pow(10., scales.preProcessing));
     shaderProgram.SetUniform1f("ppScale", Math.pow(10., scales.postProcessing));
 
     // Tell WebGL to draw the scene

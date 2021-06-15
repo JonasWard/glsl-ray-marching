@@ -15,6 +15,7 @@ const float staticZ = 0.;
 // function parameters
 uniform vec3 fScales;
 uniform float ppScale;
+uniform float preScale;
 
 // color scheme
 const vec3 color1 = vec3(0., 0., 1.);
@@ -29,6 +30,17 @@ uniform vec2 base;
 // other static input parameters
 const vec3 mvVec = vec3(0.);
 const float alpha = 1.;
+
+const vec3 vecUnit = vec3(2.);
+const vec3 vecBase = vec3(-1.);
+
+vec3 modulus(vec3 p){
+    return mod(p, vecUnit) + vecBase;
+}
+
+vec3 complex(vec3 p){
+    return p;
+}
 
 //	Classic Perlin 3D Noise 
 //	by Stefan Gustavson
