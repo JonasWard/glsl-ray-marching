@@ -1,7 +1,66 @@
 var mesh, timer, shaderProgram;
 
+function HSVtoRGB(c) {
+    //method that returns r,g,b [0->1] from hsv color object
+    var r, g, b, i, f, p, q, t;
+    if (arguments.length === 1) {
+        s = c.s, v = c.v, h = c.h;
+    }
+    // adjust to match p5 format
+    h = h / 360.;
+    i = Math.floor(h * 6.);
+    f = h * 6. - i;
+    p = v * (1. - s);
+    q = v * (1. - f * s);
+    t = v * (1. - (1. - f) * s);
+    switch (i % 6.) {
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+
+    c.r = r;
+    c.g = g;
+    c.b = b;
+    // return an array for use in p5js
+    return new function () {
+        c.r;
+        c.g;
+        c.b;
+    }
+}
+
+class Color {
+    constructor(red, green, blue){
+        this.isHSV = false;
+        this.r = red;
+        this.g = green;
+        this.b = blue;
+    }
+
+    setHSV(hue,saturation,value) {
+        this.isHSV = true;
+        this.h = hue;
+        this.s = saturation;
+        this.v = value;
+
+        HSVtoRGB(this);
+    }
+
+    static fromHSV(hue,saturation,value){
+        var c = new Color(0., 0., 0.);
+        c.setHSV(hue, saturation, value);
+        return c;
+    }
+}
+
 var scales = new function () {
-    this.preProcessing = 0.;
+    this.preProcessingA = 2.;
+    this.preProcessingB = 2.;
+    this.preProcessingC = 0.;
     this.distanceA = -1.80;
     this.distanceB = -1.00;
     this.distanceC = -1.00;
@@ -19,12 +78,30 @@ var userInput = new function() {
     this.reset = false;
 }
 
-var preProcessing = ["sin", "cos", "modTiling", "complexTiling", "none"];
+var colorData = new function() {
+    this.count = 2;
+    this.minColor = 2;
+    this.maxColor = 11;
+    this.color0 = Color.fromHSV(0., 0., 0.);
+    this.color1 = Color.fromHSV(244, .93, 0.56);
+    this.color2 = Color.fromHSV(350, .85, .77);
+    this.color3 = Color.fromHSV(50, 1., 0.8);
+    this.color4 = Color.fromHSV(200, 0.7, 0.7);
+    this.color5 = Color.fromHSV(80, 1., 0.8);
+    this.color6 = Color.fromHSV(300, 0.7, 0.7);
+    this.color7 = Color.fromHSV(140, 1., 0.8);
+    this.color8 = Color.fromHSV(60, 0.7, 0.7);
+    this.color9 = Color.fromHSV(240, 1., 0.8);
+    this.color10 = Color.fromHSV(160, 0.7, 0.7);
+}
+
+var preProcessing = ["sin", "cos", "modTiling", "modAlternate", "complexTiling", "none"];
 
 var preDict = {
     "sin": "sin",
     "cos": "cos",
     "modTiling": "modulus",
+    "modAlternate": "alternate",
     "complexTiling": "complex",
     "none": null
 }
@@ -96,7 +173,7 @@ var constructSDFData = function(pre, f1, f2, f3, post) {
 
     var pre_calc = '';
     if (!(preDict[pre] == null)) {
-        pre_calc = "\n\tp = " + preDict[pre] + "(p * preScale) / preScale;\n";
+        pre_calc = "\n\tp = " + preDict[pre] + "(p);\n";
     }
 
     sdf_string = pre_calc + "\n\treturn " + sdf_string + ";\n";
@@ -258,26 +335,29 @@ var initCanvas = function () {
     var gui = new dat.GUI();
 
     var scalesData = gui.addFolder('scales');
-    scalesData.add(scales, 'preProcessing', -3.00, 5.00);
+    var preProc = scalesData.addFolder('preProcessing');
+    preProc.add(scales, 'preProcessingA', -1.00, 10.00);
+    preProc.add(scales, 'preProcessingB', -1.00, 10.00);
+    preProc.add(scales, 'preProcessingC', -1.00, 10.00);
     scalesData.add(scales, 'distanceA', -3.00, 5.00);
     scalesData.add(scales, 'distanceB', -3.00, 5.00);
     scalesData.add(scales, 'distanceC', -3.00, 5.00);
     scalesData.add(scales, 'postProcessing', -3.00, 5.00);
 
-    var functionDiscriptions = gui.addFolder('functions');
-    functionDiscriptions.add(functions, 'pre', preProcessing).onChange( function () {
+    var functionDescriptions = gui.addFolder('functions');
+    functionDescriptions.add(functions, 'pre', preProcessing).onChange( function () {
         switchShader();
     });
-    functionDiscriptions.add(functions, 'f1', functionNames).onChange( function () {
+    functionDescriptions.add(functions, 'f1', functionNames).onChange( function () {
         switchShader();
     });
-    functionDiscriptions.add(functions, 'f2', functionNames).onChange( function () {
+    functionDescriptions.add(functions, 'f2', functionNames).onChange( function () {
         switchShader();
     });
-    functionDiscriptions.add(functions, 'f3', functionNames).onChange( function () {
+    functionDescriptions.add(functions, 'f3', functionNames).onChange( function () {
         switchShader();
     });
-    functionDiscriptions.add(functions, 'post', postProcessing).onChange( function () {
+    functionDescriptions.add(functions, 'post', postProcessing).onChange( function () {
         switchShader();
     });
 
@@ -295,6 +375,37 @@ var initCanvas = function () {
         userInput.zoomLevel = 1.;
     }};
     adjustables.add(obj, 'reset');
+
+    var colors = gui.addFolder('colors');
+    for (i = 0; i < colorData.count; i++) {
+        thisColor = colors.addColor(colorData, 'color'+i).onChange( function () {
+            console.log('color'+1);
+            console.log(thisColor);
+            // let locColor = getAttribute(colorData, 'color'+i);
+            // locColor.setHSV(thisColor.h, globalThis.s, thisColor.v);
+        });
+    }
+
+    var oneMoreColor = { add:function(){
+        console.log("adding color");
+        if (colorData.count < colorData.maxColor) {
+            colorData.count += 1;
+        }
+        console.log(colorData.count);
+        initCanvas();
+    }};
+
+    var oneLessColor = { remove:function(){
+        console.log("removing color");
+        if (colorData.count > colorData.minColor) {
+            colorData.count -= 1;
+        }
+        console.log(colorData.count);
+        initCanvas();
+    }};
+
+    colors.add(oneMoreColor, 'add');
+    colors.add(oneLessColor, 'remove');
 }
 
 var drawScene = function () {
@@ -338,7 +449,11 @@ var drawScene = function () {
         Math.pow(10., scales.distanceC)
     ]);
 
-    shaderProgram.SetUniform1f("preScale", Math.pow(10., scales.preProcessing));
+    shaderProgram.SetUniformVec3("preScales", [
+        Math.round(Math.pow(10., scales.preProcessingA)),
+        Math.round(Math.pow(10., scales.preProcessingB)),
+        Math.pow(10., scales.preProcessingC)
+    ]);
     shaderProgram.SetUniform1f("ppScale", Math.pow(10., scales.postProcessing));
 
     // Tell WebGL to draw the scene

@@ -3,7 +3,6 @@ precision mediump float;
 
 uniform float time;
 
-
 // Gyroid Marching
 const float tau = 6.2831853072;
 const float staticZ = 0.;
@@ -15,7 +14,7 @@ const float staticZ = 0.;
 // function parameters
 uniform vec3 fScales;
 uniform float ppScale;
-uniform float preScale;
+uniform vec3 preScales;
 
 // color scheme
 const vec3 color1 = vec3(0., 0., 1.);
@@ -31,15 +30,76 @@ uniform vec2 base;
 const vec3 mvVec = vec3(0.);
 const float alpha = 1.;
 
-const vec3 vecUnit = vec3(2.);
-const vec3 vecBase = vec3(-1.);
-
 vec3 modulus(vec3 p){
-    return mod(p, vecUnit) + vecBase;
+    return vec3(mod(p.xy, preScales.xy) - preScales.xy * .5, preScales.z);
+}
+
+vec2 alternater(vec2 pInd, vec2 pMod){
+    float coorU = mod(pInd.x/preScales.x, 2.);
+    float coorV = mod(pInd.y/preScales.y, 2.);
+    if ((coorU == 0.) && (coorV == 0.)){
+        return pMod;
+    } else if ((coorU == 1.) && (coorV == 0.)) {
+        return vec2(preScales.x - pMod.x, pMod.y);
+    } else if ((coorU == 0.) && (coorV == 1.)) {
+        return vec2(pMod.x, preScales.y - pMod.y);
+    } else {
+        return vec2(preScales.x - pMod.x, preScales.y - pMod.y);
+    }
+}
+
+vec3 alternate(vec3 p){
+    vec2 pMod = mod(p.xy, preScales.xy);
+    vec2 pInd = p.xy - pMod;
+
+    pMod = alternater(pInd, pMod);
+
+    return vec3(pMod - preScales.xy * .5, preScales.z);
+}
+
+float signV(float v){
+    if (v < 0.) {
+        return -1.;
+    } else if (v > 0.) {
+        return 1.;
+    } else {
+        return 0.;
+    }
+}
+
+vec2 fgCircusquare(vec2 p){
+    // circle to square mapping assuming that u and v are elements of [-1, 1]
+    float x2 = p.x * p.x;
+    float y2 = p.y * p.y;
+    float sq_l = x2 + y2;
+    float l = sqrt(sq_l);
+    float mult = sqrt(l*(l - sqrt(sq_l - 4. * x2 * y2)));
+    return vec2(
+        signV(p.x)*mult/(1.41421 * p.x),
+        signV(p.y)*mult/(1.41421 * p.y)
+    );
+}
+
+vec2 fgSquircular(vec2 p){
+    // square to circle mapping assuming that x and y are elements of [-1, 1]
+    float l = length(p);
+    float sq_l = l * l;
+    float x2 = p.x * p.x;
+    float y2 = p.y * p.y;
+    float top = sqrt(sq_l - x2 * y2);
+    float mult = top / l;
+
+    return vec2(p.x * mult, p.y * mult);
 }
 
 vec3 complex(vec3 p){
-    return p;
+    vec2 pMod = mod(p.xy, preScales.xy);
+    vec2 pInd = p.xy - pMod;
+
+    pMod = alternater(pInd, pMod);
+    vec2 pXY = pMod * 2. - preScales.xy;
+    pXY = fgSquircular(vec2(pXY.x / (preScales.x-0.00001), pXY.y / preScales.y-0.00001));
+    return vec3(pXY.x * preScales.x * .5, pXY.y * preScales.y *.5, preScales.z);
 }
 
 //	Classic Perlin 3D Noise 
