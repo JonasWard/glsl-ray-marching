@@ -1,5 +1,26 @@
 var mesh, timer, shaderProgram;
 
+dat.GUI.prototype.removeFolder = function(name) {
+    var folder = this.__folders[name];
+    
+    if (!folder) {
+        return;
+    }
+
+    folder.close();
+    this.__ul.removeChild(folder.domElement.parentNode);
+    delete this.__folders[name];
+    this.onResize();
+}
+
+dat.GUI.prototype.hide = function() {
+    this.domElement.style.display = 'none';
+}
+
+dat.GUI.prototype.show = function() {
+    this.domElement.style.display = '';
+}
+
 function HSVtoRGB(c) {
     //method that returns r,g,b [0->1] from hsv color object
     var r, g, b, i, f, p, q, t;
@@ -50,6 +71,13 @@ class Color {
         HSVtoRGB(this);
     }
 
+    setRGB(red, green, blue){
+        this.isHSV = false;
+        this.r = red;
+        this.g = green;
+        this.b = blue;
+    }
+
     static fromHSV(hue,saturation,value){
         var c = new Color(0., 0., 0.);
         c.setHSV(hue, saturation, value);
@@ -82,17 +110,32 @@ var colorData = new function() {
     this.count = 2;
     this.minColor = 2;
     this.maxColor = 11;
-    this.color0 = Color.fromHSV(0., 0., 0.);
-    this.color1 = Color.fromHSV(244, .93, 0.56);
-    this.color2 = Color.fromHSV(350, .85, .77);
-    this.color3 = Color.fromHSV(50, 1., 0.8);
-    this.color4 = Color.fromHSV(200, 0.7, 0.7);
-    this.color5 = Color.fromHSV(80, 1., 0.8);
-    this.color6 = Color.fromHSV(300, 0.7, 0.7);
-    this.color7 = Color.fromHSV(140, 1., 0.8);
-    this.color8 = Color.fromHSV(60, 0.7, 0.7);
-    this.color9 = Color.fromHSV(240, 1., 0.8);
-    this.color10 = Color.fromHSV(160, 0.7, 0.7);
+
+    this.colors = [
+        Color.fromHSV(0., 0., 0.),
+        Color.fromHSV(244, .93, 0.56),
+        Color.fromHSV(350, .85, .77),
+        Color.fromHSV(50, 1., 0.8),
+        Color.fromHSV(200, 0.7, 0.7 ),
+        Color.fromHSV(80, 1., 0.8),
+        Color.fromHSV(300, 0.7, 0.7),
+        Color.fromHSV(140, 1., 0.8),
+        Color.fromHSV(60, 0.7, 0.7),
+        Color.fromHSV(240, 1., 0.8),
+        Color.fromHSV(160, 0.7, 0.7)
+    ];
+
+    this.color0 = this.colors[0];
+    this.color1 = this.colors[1];
+    this.color2 = this.colors[2];
+    this.color3 = this.colors[3];
+    this.color4 = this.colors[4];
+    this.color5 = this.colors[5];
+    this.color6 = this.colors[6];
+    this.color7 = this.colors[7];
+    this.color8 = this.colors[8];
+    this.color9 = this.colors[9];
+    this.color10 = this.colors[10];
 }
 
 var preProcessing = ["sin", "cos", "modTiling", "modAlternate", "complexTiling", "none"];
@@ -273,6 +316,42 @@ function switchShader() {
     shaderProgram.UseProgram();
 }
 
+function colorUpdate(gui) {
+    gui.removeFolder('colors');
+
+    var colors = gui.addFolder('colors');
+    for (i = 0; i < colorData.count; i++) {
+        c = colors.addColor(colorData, 'color'+i).onChange( function () {
+            colorData.colors[i].setRGB(c.r, c.g, c.b);
+            console.log(c);
+            console.log(colorData.colors[i]);
+        });
+    }
+
+    var oneMoreColor = { add:function(){
+        console.log("adding color");
+        if (colorData.count < colorData.maxColor) {
+            colorData.count += 1;
+        }
+        console.log(colorData.count);
+        colorUpdate(gui);
+    }};
+
+    var oneLessColor = { remove:function(){
+        console.log("removing color");
+        if (colorData.count > colorData.minColor) {
+            colorData.count -= 1;
+        }
+        console.log(colorData.count);
+        colorUpdate(gui);
+    }};
+
+    colors.add(oneMoreColor, 'add');
+    colors.add(oneLessColor, 'remove');
+
+    colors.show();
+}
+
 // starts the canvas and gl
 var initCanvas = function () {
     canvas = document.getElementById('game-surface');
@@ -376,36 +455,7 @@ var initCanvas = function () {
     }};
     adjustables.add(obj, 'reset');
 
-    var colors = gui.addFolder('colors');
-    for (i = 0; i < colorData.count; i++) {
-        thisColor = colors.addColor(colorData, 'color'+i).onChange( function () {
-            console.log('color'+1);
-            console.log(thisColor);
-            // let locColor = getAttribute(colorData, 'color'+i);
-            // locColor.setHSV(thisColor.h, globalThis.s, thisColor.v);
-        });
-    }
-
-    var oneMoreColor = { add:function(){
-        console.log("adding color");
-        if (colorData.count < colorData.maxColor) {
-            colorData.count += 1;
-        }
-        console.log(colorData.count);
-        initCanvas();
-    }};
-
-    var oneLessColor = { remove:function(){
-        console.log("removing color");
-        if (colorData.count > colorData.minColor) {
-            colorData.count -= 1;
-        }
-        console.log(colorData.count);
-        initCanvas();
-    }};
-
-    colors.add(oneMoreColor, 'add');
-    colors.add(oneLessColor, 'remove');
+    colorUpdate(gui);
 }
 
 var drawScene = function () {
