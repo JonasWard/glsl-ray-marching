@@ -2,7 +2,7 @@
 <project version="4">
   <component name="PublishConfigData" serverName="local" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
-      <paths name="jonasward.ch">
+      <paths name="jonasward.ch/shaders">
         <serverdata>
           <mappings>
             <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
