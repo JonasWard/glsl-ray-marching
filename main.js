@@ -355,7 +355,9 @@ function colorUpdate(gui) {
 // starts the canvas and gl
 var initCanvas = function () {
     canvas = document.getElementById('game-surface');
-    gl = canvas.getContext('webgl2', { preserveDrawingBuffer: true });   // WebGL 2
+    // console.log(canvas);
+    gl = canvas.getContext('webgl', { preserveDrawingBuffer: true });   // WebGL 2
+    // console.log(gl);
 
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);

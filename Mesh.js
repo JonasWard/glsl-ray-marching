@@ -4,13 +4,18 @@ class Mesh
     {   
         this.numberOfIndices = indicesArray.length;
         // Create vao, vbo, and ebo
-        this.vao = gl.createVertexArray();
+        
+        this.vao_ext = gl.getExtension('OES_vertex_array_object');
+        this.vao = this.vao_ext.createVertexArrayOES();
+        this.vao_ext.bindVertexArrayOES(this.vao);
+
+        // this.vao = gl.createVertexArray();
         this.verticesVBO = gl.createBuffer();
         this.ebo = gl.createBuffer();
 
         const positionAttribute = gl.getAttribLocation(shader.GetProgram(), 'position');
 
-        gl.bindVertexArray(this.vao);
+        this.vao_ext.bindVertexArrayOES(this.vao);
         
         gl.bindBuffer(gl.ARRAY_BUFFER, this.verticesVBO);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(verticesArray), gl.STATIC_DRAW);
@@ -21,7 +26,7 @@ class Mesh
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint32Array(indicesArray), gl.STATIC_DRAW);
     
-        gl.bindVertexArray(null);
+        this.vao_ext.bindVertexArrayOES(this.vao);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
     }
@@ -31,10 +36,11 @@ class Mesh
      */
     Draw()
     {
-        gl.bindVertexArray(this.vao);
+        // vao_ext = gl.getExtension('OES_vertex_array_object');
+        this.vao_ext.bindVertexArrayOES(this.vao);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo);
         gl.drawElements(gl.TRIANGLES, this.numberOfIndices, gl.UNSIGNED_INT, 0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-        gl.bindVertexArray(null);
+        this.vao_ext.bindVertexArrayOES.bindVertexArray(null);
     }
 }
