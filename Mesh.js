@@ -38,9 +38,10 @@ class Mesh
     {
         // vao_ext = gl.getExtension('OES_vertex_array_object');
         this.vao_ext.bindVertexArrayOES(this.vao);
+        gl.getExtension('OES_element_index_uint');
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ebo);
         gl.drawElements(gl.TRIANGLES, this.numberOfIndices, gl.UNSIGNED_INT, 0);
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
-        this.vao_ext.bindVertexArrayOES.bindVertexArray(null);
+        this.vao_ext.bindVertexArrayOES(null);
     }
 }
