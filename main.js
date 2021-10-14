@@ -1,4 +1,4 @@
-var mesh, timer, shaderProgram;
+let mesh, timer, shaderProgram;
 
 dat.GUI.prototype.removeFolder = function(name) {
     var folder = this.__folders[name];
@@ -23,7 +23,7 @@ dat.GUI.prototype.show = function() {
 
 function HSVtoRGB(c) {
     //method that returns r,g,b [0->1] from hsv color object
-    var r, g, b, i, f, p, q, t;
+    let r, g, b, i, f, p, q, t;
     if (arguments.length === 1) {
         s = c.s, v = c.v, h = c.h;
     }
@@ -109,33 +109,15 @@ var userInput = new function() {
 var colorData = new function() {
     this.count = 2;
     this.minColor = 2;
-    this.maxColor = 11;
+    this.maxColor = 2;
 
     this.colors = [
         Color.fromHSV(0., 0., 0.),
-        Color.fromHSV(244, .93, 0.56),
-        Color.fromHSV(350, .85, .77),
-        Color.fromHSV(50, 1., 0.8),
-        Color.fromHSV(200, 0.7, 0.7 ),
-        Color.fromHSV(80, 1., 0.8),
-        Color.fromHSV(300, 0.7, 0.7),
-        Color.fromHSV(140, 1., 0.8),
-        Color.fromHSV(60, 0.7, 0.7),
-        Color.fromHSV(240, 1., 0.8),
-        Color.fromHSV(160, 0.7, 0.7)
+        Color.fromHSV(244, .93, 0.56)
     ];
 
     this.color0 = this.colors[0];
     this.color1 = this.colors[1];
-    this.color2 = this.colors[2];
-    this.color3 = this.colors[3];
-    this.color4 = this.colors[4];
-    this.color5 = this.colors[5];
-    this.color6 = this.colors[6];
-    this.color7 = this.colors[7];
-    this.color8 = this.colors[8];
-    this.color9 = this.colors[9];
-    this.color10 = this.colors[10];
 }
 
 var preProcessing = ["sin", "cos", "modTiling", "modAlternate", "complexTiling", "none"];
@@ -226,16 +208,16 @@ var constructSDFData = function(pre, f1, f2, f3, post) {
 
 var constructFragShader = function(sdfString = null) {
     var shader = '';
-    var tpmsShaderA = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartA", async: false}).responseText;
+    var tpmsShaderA = jQuery.ajax({type: "GET", url: "Shaders/tpmsBrickShaderPartA", async: false}).responseText;
     if (sdfString == null) {
         console.log("null string");
-        var tpmsShaderSDF = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartSDF", async: false}).responseText;
+        var tpmsShaderSDF = jQuery.ajax({type: "GET", url: "Shaders/tpmsBrickShaderPartSDF", async: false}).responseText;
     } else {
         console.log("given string");
         var tpmsShaderSDF = sdfString;
     }
 
-    var tpmsShaderB = jQuery.ajax({type: "GET", url: "Shaders/tpmsShaderPartB", async: false}).responseText;
+    var tpmsShaderB = jQuery.ajax({type: "GET", url: "Shaders/tpmsBrickShaderPartB", async: false}).responseText;
 
     shader = tpmsShaderA + tpmsShaderSDF + tpmsShaderB;
 
@@ -346,8 +328,8 @@ function colorUpdate(gui) {
         colorUpdate(gui);
     }};
 
-    colors.add(oneMoreColor, 'add');
-    colors.add(oneLessColor, 'remove');
+    // colors.add(oneMoreColor, 'add');
+    // colors.add(oneLessColor, 'remove');
 
     colors.show();
 }
@@ -511,34 +493,6 @@ var drawScene = function () {
     // Tell WebGL to draw the scene
     mesh.Draw();
 }
-
-//switch between different shaders
-
-// function switchShader() {
-
-//     if (shader.type == "gyroid") {
-//         frag = 'gyroid'
-//     } else if (shader.type == "gyroidCylinderSmooth") {
-//         frag = 'gyroidCylinderSmooth'
-//     } else if (shader.type == "gyroidCylinderStepped") {
-//         frag = 'gyroidCylinderStepped'
-//     } else if (shader.type == "indexedGyroid") {
-//         frag = 'gyroidIndexed'
-//     } else if (shader.type == "schwarzDPPIndexed") {
-//         frag = 'schwarzDPPIndexed'
-//     } else if (shader.type == "schwarzDPPGradient") {
-//         frag = 'schwarzDPPGradient'
-//     } else if (shader.type == "schwarzDPPSmooth") {
-//         frag = 'schwarzDPPSmooth'
-//     } else if (shader.type == "gyroidSmooth") {
-//         frag = 'gyroidSmooth'
-//     }
-
-//     shaderProgram = new Shader('vertShader', frag);
-//     // Activate the shader program
-//     shaderProgram.UseProgram();
-
-// }
 
 function HSVtoRGB(h, s, v) {
     var r, g, b, i, f, p, q, t;
