@@ -1,5 +1,42 @@
 var shaderText = '';
 
+
+function nearestPowerOf2(n) {
+    return 1 << 31 - Math.clz32(n);
+}
+
+// converts as list of floats to an rgba texture, rg values represent 1 value, ba represent
+// store minimum and maximum values of the range in a uniform
+const textureFromArray = (gl, values) => {
+    const dataItems = values;
+    const minVal = Math.min(...values);
+    const maxVal = Math.max(...values);
+
+    const delta = maxVal - minVal;
+    const deltaMultiplier = 256 * 256 / delta;
+
+    // regrading
+    const regradedValues = values.map(v => Math.floor(deltaMultiplier * (v - minVal)))
+    const uint8Values = [];
+
+    regradedValues.forEach(v => {
+        const v1 = Math.floor(v % 256);
+        const v0 = Math.floor((v - v1) / 256 % 256);
+
+        uint8Values.push(v1, v0);
+    })
+
+    // finding the size of the texture
+    const pixelCount = uint8Values.length / 2.;
+    const heightWidth = nearestPowerOf2(Math.sqrt(pixelCount)) * 2;
+
+    var dataTypedArray = new Uint8Array(uint8Values); // Don't need to do this if the data is already in a typed array
+    var texture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, heightWidth, heightWidth, 0, type, gl.UNSIGNED_BYTE, dataTypedArray);
+    // Other texture setup here, like filter modes and mipmap generation
+}
+
 class Shader
 {
     constructor(vertShaderId, fragShaderString)
@@ -151,5 +188,11 @@ class Shader
     SetUniform1f(uniformName, value)
     {
         gl.uniform1f(gl.getUniformLocation(this.shaderProgram, uniformName), value);
+    }
+
+    SetUniform10f = (uniformName, value) => gl.uniform1f(gl.getUniformLocation(this.shaderProgram, uniformName), 10, value);
+
+    AddTexture = (uniformName, v, positions) => {
+        var data = new Uint8Array([])
     }
 }

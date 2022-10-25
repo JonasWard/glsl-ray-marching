@@ -1,8 +1,52 @@
 
 }
 
+float HardCodedDistances(vec3 p) {
+    float y = p.y / ySpacing;
+    float remainder = fract(y + .5);
+    float groundedY = y - 10.0 * floor(y / 10.);
+
+    // return remainder;
+
+    if (groundedY < 1.) {
+        return v0;
+        return v0 + (v1 - v0) * fract(y);
+    } else if (groundedY < 2.) {
+        return v1;
+        return v1 + (v2 - v1) * remainder;
+    } else if (groundedY < 3.) {
+        return v2;
+        return v2 + (v3 - v2) * remainder;
+    } else if (groundedY < 4.) {
+        return v3;
+        return v3 + (v4 - v3) * remainder;
+    } else if (groundedY < 5.) {
+        return v4;
+        return v4 + (v5 - v4) * remainder;
+    } else if (groundedY < 6.) {
+        return v5;
+        return v5 + (v6 - v5) * remainder;
+    // } else if (groundedY < 7.) {
+    //     return v6;
+    //     return v6 + (v7 - v6) * remainder;
+    // } else if (groundedY < 8.) {
+    //     return v7;
+    //     return v7 + (v8 - v7) * remainder;
+    // } else if (groundedY < 9.) {
+    //     return v8;
+    //     return v8 + (v9 - v8) * remainder;
+    // } else if (groundedY < 10.) {
+    //     return v9;
+    //     return v9 + (v0 - v9) * remainder;
+    } else {
+        // return 0.;
+        return GetDist(p);
+    }
+}
+
+
 float GetDist(vec2 p) {
-    return GetDist(vec3(p, 0.));
+    return HardCodedDistances(vec3(p, 0.));
 }
 
 vec3 colorFromDistance(float d) {
@@ -42,7 +86,7 @@ void main()
 
     // p = rotate( p );
 
-    float d = GetDist(p);
+    float d = HardCodedDistances(p);
 
     vec3 n = colorFromDistance(d * 2.);
 

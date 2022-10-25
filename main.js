@@ -1,5 +1,9 @@
 var mesh, timer, shaderProgram;
 
+const readFloats = (floatString) => {
+    return JSON.parse(floatString);
+}
+
 dat.GUI.prototype.removeFolder = function(name) {
     var folder = this.__folders[name];
     
@@ -104,6 +108,20 @@ var userInput = new function() {
     this.output = [0., 0.];
     this.rotation = 0.000;
     this.reset = false;
+}
+
+var valueData = new function() {
+    this.ySpacing = 10.;
+    this.v0 = 0.0;
+    this.v1 = 0.1;
+    this.v2 = 0.2;
+    this.v3 = 0.3;
+    this.v4 = 0.4;
+    this.v5 = 0.5;
+    this.v6 = 0.6;
+    this.v7 = 0.7;
+    this.v8 = 0.8;
+    this.v9 = 0.9;
 }
 
 var colorData = new function() {
@@ -445,6 +463,19 @@ var initCanvas = function () {
     var adjustables = gui.addFolder('user input');
     adjustables.add(userInput, 'rotation', -3.1415927, 3.1415927);
 
+    var dataInput = gui.addFolder('numeric data');
+    dataInput.add(valueData, 'v0', 0.0, 1.);
+    dataInput.add(valueData, 'v1', 0.0, 1.);
+    dataInput.add(valueData, 'v2', 0.0, 1.);
+    dataInput.add(valueData, 'v3', 0.0, 1.);
+    dataInput.add(valueData, 'v4', 0.0, 1.);
+    dataInput.add(valueData, 'v5', 0.0, 1.);
+    dataInput.add(valueData, 'v6', 0.0, 1.);
+    dataInput.add(valueData, 'v7', 0.0, 1.);
+    dataInput.add(valueData, 'v8', 0.0, 1.);
+    dataInput.add(valueData, 'v9', 0.0, 1.);
+    dataInput.add(valueData, 'ySpacing', .1, 10.);
+
     userInput.reset = false;
 
     var obj = { reset:function(){
@@ -488,6 +519,18 @@ var drawScene = function () {
     shaderProgram.SetUniform1f("fractalIncrementer", timer.GetFractalIncrement());
     shaderProgram.SetUniformVec2("base", userInput.base);
     shaderProgram.SetUniform1f("rotation", userInput.rotation);
+
+    shaderProgram.SetUniform1f("v0", valueData.v0);
+    shaderProgram.SetUniform1f("v1", valueData.v1);
+    shaderProgram.SetUniform1f("v2", valueData.v2);
+    shaderProgram.SetUniform1f("v3", valueData.v3);
+    shaderProgram.SetUniform1f("v4", valueData.v4);
+    shaderProgram.SetUniform1f("v5", valueData.v5);
+    shaderProgram.SetUniform1f("v6", valueData.v6);
+    shaderProgram.SetUniform1f("v7", valueData.v7);
+    shaderProgram.SetUniform1f("v8", valueData.v8);
+    shaderProgram.SetUniform1f("v9", valueData.v9);
+    shaderProgram.SetUniform1f('ySpacing',valueData.ySpacing );
 
     // console.log("happy");
 

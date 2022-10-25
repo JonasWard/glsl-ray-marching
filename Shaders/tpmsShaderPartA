@@ -16,6 +16,23 @@ uniform vec3 fScales;
 uniform float ppScale;
 uniform vec3 preScales;
 
+// data variables
+// uniform float v10[10] = float[10](0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9);
+
+uniform float v0;
+uniform float v1;
+uniform float v2;
+uniform float v3;
+uniform float v4;
+uniform float v5;
+uniform float v6;
+uniform float v7;
+uniform float v8;
+uniform float v9;
+
+// uniform float v10[10];
+uniform float ySpacing;
+
 // color scheme
 const vec3 color1 = vec3(0., 0., 1.);
 const vec3 color2 = vec3(1., 0., 0.);
