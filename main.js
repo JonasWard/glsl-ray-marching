@@ -85,6 +85,26 @@ class Color {
     }
 }
 
+const data = {
+    'all the data in this file': 0,
+}
+
+const saving = new function() {
+    this.saving = () => {
+        var a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        const fileName = "pattern_settings.json";
+        var json = JSON.stringify(data),
+            blob = new Blob([json], {type: "octet/stream"}),
+            url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+}
+
 var scales = new function () {
     this.preProcessingA = 2.;
     this.preProcessingB = 2.;
@@ -138,7 +158,7 @@ var colorData = new function() {
     this.color10 = this.colors[10];
 }
 
-var preProcessing = ["sin", "cos", "modTiling", "modAlternate", "complexTiling", "none"];
+var preProcessing = ["sin", "cos", "modTiling", "modAlternate", "complexTiling", "none", "scale"];
 
 var preDict = {
     "sin": "sin",
@@ -146,6 +166,7 @@ var preDict = {
     "modTiling": "modulus",
     "modAlternate": "alternate",
     "complexTiling": "complex",
+    "scale": "scalePre",
     "none": null
 }
 
@@ -456,6 +477,10 @@ var initCanvas = function () {
         userInput.zoomLevel = 1.;
     }};
     adjustables.add(obj, 'reset');
+
+    // saving and loading settings
+    const io = gui.addFolder('save / load');
+    io.add(saving, 'saving');
 
     colorUpdate(gui);
 }
