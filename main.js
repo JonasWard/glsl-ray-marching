@@ -171,7 +171,7 @@ var preDict = {
   none: null,
 };
 
-var functionNames = ['sin', 'cos', 'gyroid', 'schwarzD', 'schwarzP', 'perlin', 'neovius', 'mandelbrot', 'none'];
+var functionNames = ['sin', 'cos', 'gyroid', 'schwarzD', 'schwarzP', 'perlin', 'neovius', 'mandelbrot', 'julia', 'none'];
 
 var sdfDict = {
   sin: 'sdSin',
@@ -182,6 +182,7 @@ var sdfDict = {
   neovius: 'sdNeovius',
   perlin: 'sdPerlin',
   mandelbrot: 'sdMandelbrot',
+  julia: 'sdJulia',
   none: null,
 };
 
