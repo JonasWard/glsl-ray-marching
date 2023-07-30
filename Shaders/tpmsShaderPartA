@@ -208,8 +208,34 @@ float testMandelbrot(vec2 coord) {
 	return 0.0;
 }
 
+const float rMin = 0.0;
+const float rMax = 10.0;
+const float iMin = 0.0;
+const float iMax = 10.0;
+
+float julliaSet(vec2 c) {
+	vec2 testPoint = vec2(0,0);
+
+  const int iterations = 912;
+	for (int i = 0; i < iterations; i++){
+    testPoint = complexMult(testPoint,testPoint) + c;
+    float ndot = dot(testPoint,testPoint);
+
+    if(ndot > 4. ) { 
+      float sl = float(i);
+			return sl/float(iterations) * 2.5;
+    } 
+  } 
+
+  return 0.0;
+}
+
 float sdMandelbrot(vec3 p, float scale){
     return testMandelbrot(vec2(p.x, p.y) * scale);
+}
+
+float sdJulia(vec3 p, float scale){
+    return julliaSet(vec2(p.x, p.y) * scale);
 }
 
 float sdSin(vec3 p, float scale) {
