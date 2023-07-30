@@ -251,10 +251,8 @@ var constructFragShader = function (sdfString = null) {
   var shader = '';
   var tpmsShaderA = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartA', async: false }).responseText;
   if (sdfString == null) {
-    console.log('null string');
     var tpmsShaderSDF = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartSDF', async: false }).responseText;
   } else {
-    console.log('given string');
     var tpmsShaderSDF = sdfString;
   }
 
@@ -336,29 +334,23 @@ function colorUpdate(gui) {
   for (i = 0; i < colorData.count; i++) {
     c = colors.addColor(colorData, 'color' + i).onChange(function () {
       colorData.colors[i].setRGB(c.r, c.g, c.b);
-      console.log(c);
-      console.log(colorData.colors[i]);
     });
   }
 
   var oneMoreColor = {
     add: function () {
-      console.log('adding color');
       if (colorData.count < colorData.maxColor) {
         colorData.count += 1;
       }
-      console.log(colorData.count);
       colorUpdate(gui);
     },
   };
 
   var oneLessColor = {
     remove: function () {
-      console.log('removing color');
       if (colorData.count > colorData.minColor) {
         colorData.count -= 1;
       }
-      console.log(colorData.count);
       colorUpdate(gui);
     },
   };
@@ -372,10 +364,7 @@ function colorUpdate(gui) {
 // starts the canvas and gl
 var initCanvas = function () {
   canvas = document.getElementById('game-surface');
-  // console.log(canvas);
   gl = canvas.getContext('webgl', { preserveDrawingBuffer: true }); // WebGL 2
-  // console.log(gl);
-
   gl.enable(gl.DEPTH_TEST);
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -384,14 +373,11 @@ var initCanvas = function () {
     wheelValue = event.deltaY;
 
     if (event.shiftKey) {
-      console.log('shift keying');
       if (event.deltaX < 0) {
         userInput.rotation += 0.1;
       } else if (event.deltaX > 0) {
         userInput.rotation -= 0.1;
       }
-
-      // console.log(userInput.rotation);
     } else {
       console.log('not shift keying');
       if (event.deltaY < 0) {
@@ -414,7 +400,6 @@ var initCanvas = function () {
     if (mousedDownActive) {
       userInput.mouseDelta = [event.x - userInput.mousePosition[0], userInput.mousePosition[1] - event.y];
       userInput.output = activePosition(userInput.origin, userInput.zoomLevel, userInput.mouseDelta);
-      console.log(userInput.output);
     }
   });
 
@@ -497,16 +482,12 @@ var drawScene = function () {
   // Update the timer
   timer.Update();
 
-  // console.log();
-
   // Set uniform values of the fragment shader
   shaderProgram.SetUniformVec2('resolution', [gl.canvas.width, gl.canvas.height]);
   shaderProgram.SetUniform1f('time', timer.GetTicksInRadians());
   shaderProgram.SetUniform1f('fractalIncrementer', timer.GetFractalIncrement());
   shaderProgram.SetUniformVec2('base', userInput.base);
   shaderProgram.SetUniform1f('rotation', userInput.rotation);
-
-  // console.log("happy");
 
   shaderProgram.SetUniformVec2('mousePosition', userInput.output);
 
