@@ -7,14 +7,14 @@ float GetDist(vec2 p) {
 
 vec3 colorFromDistance(float d) {
     // float dRemap = float(floor( ( d * .5 + .5) * steps + .5 ) ) / steps;
-    if (d < 0.55) {
-        return color1;
-    }
-    return color2;
-    // float dRemap = d * .5 + .5;
-    // vec3 color = mix(color1,color2, dRemap );
+    // if (d < 0.50) {
+    //     return color1;
+    // }
+    // return color2;
+    float dRemap = d * .5 + .5;
+    vec3 color = mix(color1,color2, dRemap );
 
-    // return color;
+    return color;
 }
 
 vec3 translate(vec3 p, vec3 mv) {
@@ -47,6 +47,13 @@ void main()
     // p = rotate( p );
 
     float d = GetDist(p);
+
+    // vec3 n = color2;
+
+    // if (d * 2.0 < 0.50) {
+    //     float dV2 = length(gl_FragCoord.xy) / 2000.0;
+    //     n = vec3(1.0,0.0,0.0) * (1.0 - dV2) + vec3(1, 0, 0) * dV2;
+    // }
 
     vec3 n = colorFromDistance(d * 2.);
 
