@@ -372,14 +372,15 @@ var initCanvas = function () {
   canvas.addEventListener('wheel', function (event) {
     wheelValue = event.deltaY;
 
-    if (event.shiftKey) {
-      if (event.deltaX < 0) {
+    if (event.ctrlKey || event.metaKey) {
+      event.preventDefault();
+      if (event.deltaY < 0) {
         userInput.rotation += 0.1;
-      } else if (event.deltaX > 0) {
+      } else if (event.deltaY > 0) {
         userInput.rotation -= 0.1;
       }
-    } else {
-      console.log('not shift keying');
+    } else if (event.altKey) {
+      event.preventDefault();
       if (event.deltaY < 0) {
         userInput.zoomLevel *= 1.1;
       } else if (event.deltaY > 0) {
