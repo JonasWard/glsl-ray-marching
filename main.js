@@ -135,7 +135,7 @@ var userInput = new (function () {
 var colorData = {
   isDiscrete: false,
   discreteSteps: 10,
-  discreteShift: 0.5,
+  colorShift: 0.5,
   color0: new Color(0, 255, 255),
   color1: new Color(0, 0, 255),
 };
@@ -419,7 +419,7 @@ var initCanvas = function () {
   const c1 = colors.addColor(colorData, 'color1').onChange(() => colorData.color1.setRGB(c1.r, c1.g, c1.b));
   colors.add(colorData, 'isDiscrete').onChange(() => switchShader());
   colors.add(colorData, 'discreteSteps', 2, 10).onChange(() => switchShader());
-  colors.add(colorData, 'discreteShift', 0.0, 1.0).onChange(() => switchShader());
+  colors.add(colorData, 'colorShift', 0.0, 1.0).onChange(() => switchShader());
 
   // changing the canvas size
   const gameCanvas = document.getElementById('game-surface');
@@ -462,8 +462,8 @@ var drawScene = function () {
 
   shaderProgram.SetUniformVec3('color1', [colorData.color0.r / 255, colorData.color0.g / 255, colorData.color0.b / 255]);
   shaderProgram.SetUniformVec3('color2', [colorData.color1.r / 255, colorData.color1.g / 255, colorData.color1.b / 255]);
-  shaderProgram.SetUniform1f('shift', colorData.discreteShift);
   shaderProgram.SetUniform1f('steps', colorData.discreteSteps - 1);
+  shaderProgram.SetUniform1f('shift', colorData.colorShift);
 
   shaderProgram.SetUniformVec3('preScales', [
     Math.round(Math.pow(10, scales.preProcessingA)),
