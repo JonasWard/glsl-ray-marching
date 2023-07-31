@@ -134,6 +134,8 @@ var userInput = new (function () {
 
 var colorData = {
   isDiscrete: false,
+  discreteSteps: 10,
+  discreteShift: 0.5,
   color0: new Color(0, 255, 255),
   color1: new Color(0, 0, 255),
 };
@@ -227,17 +229,29 @@ var constructSDFData = function (pre, f1, f2, f3, post) {
 };
 
 var constructFragShader = function (sdfString = null) {
-  var shader = '';
-  var tpmsShaderA = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartA', async: false }).responseText;
-  if (sdfString == null) {
-    var tpmsShaderSDF = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartSDF', async: false }).responseText;
+  let shader = '';
+
+  // setting the distance part of the shader
+  let tpmsShaderSDF = '';
+  const tpmsShaderA = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartA', async: false }).responseText;
+  if (sdfString == null) tpmsShaderSDF = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartSDF', async: false }).responseText;
+  else tpmsShaderSDF = sdfString;
+
+  const tpmsShaderB = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartB', async: false }).responseText;
+
+  // setting the color map part of the shader
+  let tpmsShaderColor = '';
+  if (colorData.isDiscrete) {
+    tpmsShaderColor = `
+    float dRemap = float(floor( ( d * .5 + shift) * steps + .5 ) ) / steps;`;
   } else {
-    var tpmsShaderSDF = sdfString;
+    tpmsShaderColor = `
+    float dRemap = d * .5 + .5;`;
   }
 
-  var tpmsShaderB = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartB', async: false }).responseText;
+  const tpmsShaderC = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartC', async: false }).responseText;
 
-  shader = tpmsShaderA + tpmsShaderSDF + tpmsShaderB;
+  shader = tpmsShaderA + tpmsShaderSDF + tpmsShaderB + tpmsShaderColor + tpmsShaderC;
 
   console.log(shader);
 
@@ -450,6 +464,8 @@ var initCanvas = function () {
   const c1 = colors.addColor(colorData, 'color1').onChange(function () {
     colorData.color1.setRGB(c1.r, c1.g, c1.b);
   });
+  colors.add(colorData, 'discreteSteps', 2, 10).onChange(() => switchShader());
+  colors.add(colorData, 'discreteShift', 0.0, 1.0).onChange(() => switchShader());
   // changing the canvas size
   const gameCanvas = document.getElementById('game-surface');
   gameCanvas.width = canvasSizes.width;
@@ -491,6 +507,8 @@ var drawScene = function () {
 
   shaderProgram.SetUniformVec3('color1', [colorData.color0.r / 255, colorData.color0.g / 255, colorData.color0.b / 255]);
   shaderProgram.SetUniformVec3('color2', [colorData.color1.r / 255, colorData.color1.g / 255, colorData.color1.b / 255]);
+  shaderProgram.SetUniform1f('steps', colorData.discreteSteps);
+  shaderProgram.SetUniform1f('shift', colorData.discreteShift);
 
   shaderProgram.SetUniformVec3('preScales', [
     Math.round(Math.pow(10, scales.preProcessingA)),

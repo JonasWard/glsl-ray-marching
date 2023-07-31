@@ -1,0 +1,47 @@
+
+    vec3 color = mix(color1,color2, dRemap );
+    return color;
+}
+
+vec3 translate(vec3 p, vec3 mv) {
+    return (p + mv);
+}
+
+vec3 translate(vec3 p) {
+    return translate(p, mvVec);
+}
+
+vec2 rotate(vec2 p, float a) {
+    return vec2(
+        p.x * cos(a) - p.y * sin(a),
+        p.x * sin(a) + p.y * cos(a)
+    );
+}
+
+vec2 rotate(vec2 p) {
+    return rotate(p, rotation);
+}
+
+void main()
+{
+    vec2 scaledVec = (gl_FragCoord.xy - base) / zoomLevel - mousePosition;
+    scaledVec = rotate(scaledVec);
+    // scaledVec = scaledVec - mousePosition;
+
+    vec3 p = vec3(scaledVec, 0.);
+
+    // p = rotate( p );
+
+    float d = GetDist(p);
+
+    // vec3 n = color2;
+
+    // if (d * 2.0 < 0.50) {
+    //     float dV2 = length(gl_FragCoord.xy) / 2000.0;
+    //     n = vec3(1.0,0.0,0.0) * (1.0 - dV2) + vec3(1, 0, 0) * dV2;
+    // }
+
+    vec3 n = colorFromDistance(d * 2.);
+
+    gl_FragColor = vec4(n, 1.);
+}

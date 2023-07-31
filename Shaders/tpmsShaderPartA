@@ -19,6 +19,8 @@ uniform vec3 preScales;
 // color scheme
 uniform vec3 color1;
 uniform vec3 color2;
+uniform float steps;
+uniform float shift;
 
 // user interraction
 uniform vec2 mousePosition;
