@@ -404,6 +404,7 @@ var initCanvas = function () {
       userInput.mousePosition = [0, 0];
       userInput.mouseDelta = [0, 0];
       userInput.zoomLevel = 1;
+      userInput.rotation = 0;
     },
   };
   adjustables.add(obj, 'reset');
