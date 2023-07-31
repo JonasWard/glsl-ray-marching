@@ -1,155 +1,141 @@
 var shaderText = '';
 
-class Shader
-{
-    constructor(vertShaderId, fragShaderString)
-    {
-        this.shaderProgram = gl.createProgram();
+class Shader {
+  constructor(vertShaderId, fragShaderString) {
+    this.shaderProgram = gl.createProgram();
 
-        var vertexShader = this.getShader(gl, vertShaderId);
-        var fragmentShader = this.strFragShader(gl, fragShaderString);
-    
-        gl.attachShader(this.shaderProgram, vertexShader);
-        gl.attachShader(this.shaderProgram, fragmentShader);
-        gl.linkProgram(this.shaderProgram);
-    
-        if (!gl.getProgramParameter(this.shaderProgram, gl.LINK_STATUS)) {
-            alert("Could not initialise shaders");
+    var vertexShader = this.getShader(gl, vertShaderId);
+    var fragmentShader = this.strFragShader(gl, fragShaderString);
+
+    gl.attachShader(this.shaderProgram, vertexShader);
+    gl.attachShader(this.shaderProgram, fragmentShader);
+    gl.linkProgram(this.shaderProgram);
+
+    if (!gl.getProgramParameter(this.shaderProgram, gl.LINK_STATUS)) {
+      alert('Could not initialise shaders');
+    }
+  }
+
+  /**
+   * Read the shader file, compile it, and create a WebGL shader
+   * @param {WebGLRenderingContext} gl Current WebGL rendering context
+   * @param {HTML Class ID} id Class ID of the shader in the active DOM
+   */
+  strFragShader(gl, string) {
+    var shader;
+
+    shader = gl.createShader(gl.FRAGMENT_SHADER);
+
+    gl.shaderSource(shader, string);
+    gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      alert(gl.getShaderInfoLog(shader));
+      return null;
+    }
+
+    return shader;
+  }
+
+  getShader(gl, id) {
+    var shaderScript = document.getElementById(id);
+    if (!shaderScript) {
+      return null;
+    }
+
+    var k = shaderScript.getAttribute('src');
+    this.readTextFile(k);
+
+    var shader;
+    if (shaderScript.type == 'x-shader/x-fragment') {
+      shader = gl.createShader(gl.FRAGMENT_SHADER);
+    } else if (shaderScript.type == 'x-shader/x-vertex') {
+      shader = gl.createShader(gl.VERTEX_SHADER);
+    } else {
+      return null;
+    }
+
+    gl.shaderSource(shader, shaderText);
+    gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      alert(gl.getShaderInfoLog(shader));
+      return null;
+    }
+
+    return shader;
+  }
+
+  readTextFile(file) {
+    var rawFile = new XMLHttpRequest();
+    rawFile.open('GET', file, false);
+    rawFile.onreadystatechange = function () {
+      if (rawFile.readyState === 4) {
+        if (rawFile.status === 200 || rawFile.status == 0) {
+          shaderText = rawFile.responseText;
         }
-    }
+      }
+    };
+    rawFile.send(null);
+  }
 
-    /**
-     * Read the shader file, compile it, and create a WebGL shader
-     * @param {WebGLRenderingContext} gl Current WebGL rendering context
-     * @param {HTML Class ID} id Class ID of the shader in the active DOM 
-     */
-    strFragShader(gl, string) {
-        var shader;
+  /**
+   * Return the WebGL shader program
+   */
+  GetProgram() {
+    return this.shaderProgram;
+  }
 
-        shader = gl.createShader(gl.FRAGMENT_SHADER);
+  /**
+   * Set the WebGL shader program to be the active renderer
+   */
+  UseProgram() {
+    gl.useProgram(this.shaderProgram);
+  }
 
-        gl.shaderSource(shader, string);
-        gl.compileShader(shader);
+  /**
+   * Set a vec2 uniform in the shader program
+   * @param {string} uniformName Name of the uniform in the shader program
+   * @param {flat array} integer 3D color vector to pass to the shader
+   */
+  SetUniformInt(uniformName, integer) {
+    var roundedInt = Math.floor(integer + 0.5);
+    gl.uniform1f(gl.getUniformLocation(this.shaderProgram, uniformName), roundedInt);
+  }
 
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            alert(gl.getShaderInfoLog(shader));
-            return null;
-        }
+  /**
+   * Set a vec2 uniform in the shader program
+   * @param {string} uniformName Name of the uniform in the shader program
+   * @param {flat array} vector 3D color vector to pass to the shader
+   */
+  SetUniformColor(uniformName, cV) {
+    gl.uniform3fv(gl.getUniformLocation(this.shaderProgram, uniformName), [cV.r, cV.g, cV.b]);
+  }
 
-        return shader;
-    }
+  /**
+   * Set a vec2 uniform in the shader program
+   * @param {string} uniformName Name of the uniform in the shader program
+   * @param {flat array} vector 2D vector to pass to the shader
+   */
+  SetUniformVec3(uniformName, vector) {
+    gl.uniform3fv(gl.getUniformLocation(this.shaderProgram, uniformName), vector);
+  }
 
-    getShader(gl, id) {
-        var shaderScript = document.getElementById(id);
-        if (!shaderScript) {
-            return null;
-        }
-    
-        var k = shaderScript.getAttribute('src');
-        this.readTextFile(k);
-    
-        var shader;
-        if (shaderScript.type == "x-shader/x-fragment") {
-            shader = gl.createShader(gl.FRAGMENT_SHADER);
-        } else if (shaderScript.type == "x-shader/x-vertex") {
-            shader = gl.createShader(gl.VERTEX_SHADER);
-        } else {
-            return null;
-        }
-    
-        gl.shaderSource(shader, shaderText);
-        gl.compileShader(shader);
-    
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-            alert(gl.getShaderInfoLog(shader));
-            return null;
-        }
-    
-        return shader;
-    }
-    
-    readTextFile(file)
-    {
-        var rawFile = new XMLHttpRequest();
-        rawFile.open("GET", file, false);
-        rawFile.onreadystatechange = function ()
-        {
-            if(rawFile.readyState === 4)
-            {
-                if(rawFile.status === 200 || rawFile.status == 0)
-                {
-                    shaderText = rawFile.responseText;
-                }
-            }
-        }
-        rawFile.send(null);
-    }
+  /**
+   * Set a vec2 uniform in the shader program
+   * @param {string} uniformName Name of the uniform in the shader program
+   * @param {flat array} vector 2D vector to pass to the shader
+   */
+  SetUniformVec2(uniformName, vector) {
+    gl.uniform2fv(gl.getUniformLocation(this.shaderProgram, uniformName), vector);
+  }
 
-    /**
-     * Return the WebGL shader program
-     */
-    GetProgram()
-    {
-        return this.shaderProgram;
-    }
-
-    /**
-     * Set the WebGL shader program to be the active renderer
-     */
-    UseProgram()
-    {
-        gl.useProgram(this.shaderProgram);
-    }
-
-    /**
-     * Set a vec2 uniform in the shader program
-     * @param {string} uniformName Name of the uniform in the shader program
-     * @param {flat array} integer 3D color vector to pass to the shader
-     */
-    SetUniformInt(uniformName, integer) 
-    {
-        var roundedInt = Math.floor(integer+.5);
-        console.log("roundInt "+uniformName+": "+roundedInt);
-        gl.uniform1f(gl.getUniformLocation(this.shaderProgram, uniformName), roundedInt);
-    }
-
-    /**
-     * Set a vec2 uniform in the shader program
-     * @param {string} uniformName Name of the uniform in the shader program
-     * @param {flat array} vector 3D color vector to pass to the shader
-     */
-    SetUniformColor(uniformName, cV) 
-    {
-        gl.uniform3fv(gl.getUniformLocation(this.shaderProgram, uniformName), [cV.r, cV.g, cV.b]);
-    }
-
-    /**
-     * Set a vec2 uniform in the shader program
-     * @param {string} uniformName Name of the uniform in the shader program
-     * @param {flat array} vector 2D vector to pass to the shader
-     */
-    SetUniformVec3(uniformName, vector)
-    {
-        gl.uniform3fv(gl.getUniformLocation(this.shaderProgram, uniformName), vector);
-    }
-
-    /**
-     * Set a vec2 uniform in the shader program
-     * @param {string} uniformName Name of the uniform in the shader program
-     * @param {flat array} vector 2D vector to pass to the shader
-     */
-    SetUniformVec2(uniformName, vector)
-    {
-        gl.uniform2fv(gl.getUniformLocation(this.shaderProgram, uniformName), vector);
-    }
-
-    /**
-     * Set a float uniform in the shader program
-     * @param {string} uniformName Name of the uniform in the shader program
-     * @param {float} value Float to pass to the shader
-     */
-    SetUniform1f(uniformName, value)
-    {
-        gl.uniform1f(gl.getUniformLocation(this.shaderProgram, uniformName), value);
-    }
+  /**
+   * Set a float uniform in the shader program
+   * @param {string} uniformName Name of the uniform in the shader program
+   * @param {float} value Float to pass to the shader
+   */
+  SetUniform1f(uniformName, value) {
+    gl.uniform1f(gl.getUniformLocation(this.shaderProgram, uniformName), value);
+  }
 }
