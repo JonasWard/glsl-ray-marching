@@ -3,6 +3,11 @@ var mesh, timer, shaderProgram;
 // a sdf method scales the position in space with a certain distance or a distance method
 // the definition of an sdf methods needs to define
 
+const canvasSizes = {
+  width: 1000,
+  height: 1000,
+};
+
 dat.GUI.prototype.removeFolder = function (name) {
   var folder = this.__folders[name];
 
@@ -445,6 +450,13 @@ var initCanvas = function () {
   const c1 = colors.addColor(colorData, 'color1').onChange(function () {
     colorData.color1.setRGB(c1.r, c1.g, c1.b);
   });
+  // changing the canvas size
+  const gameCanvas = document.getElementById('game-surface');
+  gameCanvas.width = canvasSizes.width;
+  gameCanvas.height = canvasSizes.height;
+  const canvasSizeGUI = gui.addFolder('canvas size');
+  canvasSizes.width = canvasSizeGUI.add(gameCanvas, 'width', 100, 5000);
+  canvasSizes.height = canvasSizeGUI.add(gameCanvas, 'height', 100, 5000);
 };
 
 var drawScene = function () {
@@ -453,7 +465,7 @@ var drawScene = function () {
   userInput.base = [gl.canvas.width * 0.5, gl.canvas.height * 0.5];
 
   // Adjust scene for any canvas resizing
-  resize(gl.canvas);
+  // resize(gl.canvas);
   // Update the viewport to the current canvas size
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
