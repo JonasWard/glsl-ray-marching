@@ -320,40 +320,6 @@ function switchShader() {
   shaderProgram.UseProgram();
 }
 
-// function colorUpdate(gui) {
-//   gui.removeFolder('colors');
-
-//   var colors = gui.addFolder('colors');
-//   for (i = 0; i < colorData.count; i++) {
-//     c = colors.addColor(colorData, 'color' + i).onChange(function () {
-//       colorData.colors[i].setRGB(c.r, c.g, c.b);
-//     });
-//   }
-
-//   var oneMoreColor = {
-//     add: function () {
-//       if (colorData.count < colorData.maxColor) {
-//         colorData.count += 1;
-//       }
-//       colorUpdate(gui);
-//     },
-//   };
-
-//   var oneLessColor = {
-//     remove: function () {
-//       if (colorData.count > colorData.minColor) {
-//         colorData.count -= 1;
-//       }
-//       colorUpdate(gui);
-//     },
-//   };
-
-//   colors.add(oneMoreColor, 'add');
-//   colors.add(oneLessColor, 'remove');
-
-//   colors.show();
-// }
-
 // starts the canvas and gl
 var initCanvas = function () {
   canvas = document.getElementById('game-surface');
@@ -419,21 +385,11 @@ var initCanvas = function () {
   scalesData.add(scales, 'postProcessing', -3.0, 5.0);
 
   var functionDescriptions = gui.addFolder('functions');
-  functionDescriptions.add(functions, 'pre', preProcessing).onChange(function () {
-    switchShader();
-  });
-  functionDescriptions.add(functions, 'f1', functionNames).onChange(function () {
-    switchShader();
-  });
-  functionDescriptions.add(functions, 'f2', functionNames).onChange(function () {
-    switchShader();
-  });
-  functionDescriptions.add(functions, 'f3', functionNames).onChange(function () {
-    switchShader();
-  });
-  functionDescriptions.add(functions, 'post', postProcessing).onChange(function () {
-    switchShader();
-  });
+  functionDescriptions.add(functions, 'pre', preProcessing).onChange(() => switchShader());
+  functionDescriptions.add(functions, 'f1', functionNames).onChange(() => switchShader());
+  functionDescriptions.add(functions, 'f2', functionNames).onChange(() => switchShader());
+  functionDescriptions.add(functions, 'f3', functionNames).onChange(() => switchShader());
+  functionDescriptions.add(functions, 'post', postProcessing).onChange(() => switchShader());
 
   var adjustables = gui.addFolder('user input');
   adjustables.add(userInput, 'rotation', -3.1415927, 3.1415927);
@@ -458,14 +414,12 @@ var initCanvas = function () {
 
   // adding the color menu
   const colors = gui.addFolder('colors');
-  const c0 = colors.addColor(colorData, 'color0').onChange(function () {
-    colorData.color0.setRGB(c0.r, c0.g, c0.b);
-  });
-  const c1 = colors.addColor(colorData, 'color1').onChange(function () {
-    colorData.color1.setRGB(c1.r, c1.g, c1.b);
-  });
+  const c0 = colors.addColor(colorData, 'color0').onChange(() => colorData.color0.setRGB(c0.r, c0.g, c0.b));
+  const c1 = colors.addColor(colorData, 'color1').onChange(() => colorData.color1.setRGB(c1.r, c1.g, c1.b));
+  colors.add(colorData, 'isDiscrete').onChange(() => switchShader());
   colors.add(colorData, 'discreteSteps', 2, 10).onChange(() => switchShader());
   colors.add(colorData, 'discreteShift', 0.0, 1.0).onChange(() => switchShader());
+
   // changing the canvas size
   const gameCanvas = document.getElementById('game-surface');
   gameCanvas.width = canvasSizes.width;
