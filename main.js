@@ -246,7 +246,7 @@ var constructFragShader = function (sdfString = null) {
     float dRemap = float(floor( ( d * .5 + shift) * steps + .5 ) ) / steps;`;
   } else {
     tpmsShaderColor = `
-    float dRemap = d * .5 + .5;`;
+    float dRemap = d * .5 + shift;`;
   }
 
   const tpmsShaderC = jQuery.ajax({ type: 'GET', url: 'Shaders/tpmsShaderPartC', async: false }).responseText;
