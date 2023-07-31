@@ -393,6 +393,7 @@ var initCanvas = function () {
 
   var adjustables = gui.addFolder('user input');
   adjustables.add(userInput, 'rotation', -3.1415927, 3.1415927);
+  adjustables.add(userInput, 'zoomLevel', -100, 100);
 
   userInput.reset = false;
 
