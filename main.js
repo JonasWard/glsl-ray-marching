@@ -127,37 +127,11 @@ var userInput = new (function () {
   this.reset = false;
 })();
 
-var colorData = new (function () {
-  this.count = 2;
-  this.minColor = 2;
-  this.maxColor = 11;
-
-  this.colors = [
-    Color.fromHSV(0, 0, 0),
-    Color.fromHSV(244, 0.93, 0.56),
-    Color.fromHSV(350, 0.85, 0.77),
-    Color.fromHSV(50, 1, 0.8),
-    Color.fromHSV(200, 0.7, 0.7),
-    Color.fromHSV(80, 1, 0.8),
-    Color.fromHSV(300, 0.7, 0.7),
-    Color.fromHSV(140, 1, 0.8),
-    Color.fromHSV(60, 0.7, 0.7),
-    Color.fromHSV(240, 1, 0.8),
-    Color.fromHSV(160, 0.7, 0.7),
-  ];
-
-  this.color0 = this.colors[0];
-  this.color1 = this.colors[1];
-  this.color2 = this.colors[2];
-  this.color3 = this.colors[3];
-  this.color4 = this.colors[4];
-  this.color5 = this.colors[5];
-  this.color6 = this.colors[6];
-  this.color7 = this.colors[7];
-  this.color8 = this.colors[8];
-  this.color9 = this.colors[9];
-  this.color10 = this.colors[10];
-})();
+var colorData = {
+  isDiscrete: false,
+  color0: new Color(0, 255, 255),
+  color1: new Color(0, 0, 255),
+};
 
 var preProcessing = ['sin', 'cos', 'modTiling', 'modAlternate', 'complexTiling', 'none', 'scale'];
 
@@ -327,39 +301,39 @@ function switchShader() {
   shaderProgram.UseProgram();
 }
 
-function colorUpdate(gui) {
-  gui.removeFolder('colors');
+// function colorUpdate(gui) {
+//   gui.removeFolder('colors');
 
-  var colors = gui.addFolder('colors');
-  for (i = 0; i < colorData.count; i++) {
-    c = colors.addColor(colorData, 'color' + i).onChange(function () {
-      colorData.colors[i].setRGB(c.r, c.g, c.b);
-    });
-  }
+//   var colors = gui.addFolder('colors');
+//   for (i = 0; i < colorData.count; i++) {
+//     c = colors.addColor(colorData, 'color' + i).onChange(function () {
+//       colorData.colors[i].setRGB(c.r, c.g, c.b);
+//     });
+//   }
 
-  var oneMoreColor = {
-    add: function () {
-      if (colorData.count < colorData.maxColor) {
-        colorData.count += 1;
-      }
-      colorUpdate(gui);
-    },
-  };
+//   var oneMoreColor = {
+//     add: function () {
+//       if (colorData.count < colorData.maxColor) {
+//         colorData.count += 1;
+//       }
+//       colorUpdate(gui);
+//     },
+//   };
 
-  var oneLessColor = {
-    remove: function () {
-      if (colorData.count > colorData.minColor) {
-        colorData.count -= 1;
-      }
-      colorUpdate(gui);
-    },
-  };
+//   var oneLessColor = {
+//     remove: function () {
+//       if (colorData.count > colorData.minColor) {
+//         colorData.count -= 1;
+//       }
+//       colorUpdate(gui);
+//     },
+//   };
 
-  colors.add(oneMoreColor, 'add');
-  colors.add(oneLessColor, 'remove');
+//   colors.add(oneMoreColor, 'add');
+//   colors.add(oneLessColor, 'remove');
 
-  colors.show();
-}
+//   colors.show();
+// }
 
 // starts the canvas and gl
 var initCanvas = function () {
@@ -463,7 +437,14 @@ var initCanvas = function () {
   const io = gui.addFolder('save / load');
   io.add(saving, 'saving');
 
-  colorUpdate(gui);
+  // adding the color menu
+  const colors = gui.addFolder('colors');
+  const c0 = colors.addColor(colorData, 'color0').onChange(function () {
+    colorData.color0.setRGB(c0.r, c0.g, c0.b);
+  });
+  const c1 = colors.addColor(colorData, 'color1').onChange(function () {
+    colorData.color1.setRGB(c1.r, c1.g, c1.b);
+  });
 };
 
 var drawScene = function () {
@@ -496,6 +477,9 @@ var drawScene = function () {
 
   shaderProgram.SetUniformVec3('fScales', [Math.pow(10, scales.distanceA), Math.pow(10, scales.distanceB), Math.pow(10, scales.distanceC)]);
 
+  shaderProgram.SetUniformVec3('color1', [colorData.color0.r / 255, colorData.color0.g / 255, colorData.color0.b / 255]);
+  shaderProgram.SetUniformVec3('color2', [colorData.color1.r / 255, colorData.color1.g / 255, colorData.color1.b / 255]);
+
   shaderProgram.SetUniformVec3('preScales', [
     Math.round(Math.pow(10, scales.preProcessingA)),
     Math.round(Math.pow(10, scales.preProcessingB)),
@@ -506,34 +490,6 @@ var drawScene = function () {
   // Tell WebGL to draw the scene
   mesh.Draw();
 };
-
-//switch between different shaders
-
-// function switchShader() {
-
-//     if (shader.type == "gyroid") {
-//         frag = 'gyroid'
-//     } else if (shader.type == "gyroidCylinderSmooth") {
-//         frag = 'gyroidCylinderSmooth'
-//     } else if (shader.type == "gyroidCylinderStepped") {
-//         frag = 'gyroidCylinderStepped'
-//     } else if (shader.type == "indexedGyroid") {
-//         frag = 'gyroidIndexed'
-//     } else if (shader.type == "schwarzDPPIndexed") {
-//         frag = 'schwarzDPPIndexed'
-//     } else if (shader.type == "schwarzDPPGradient") {
-//         frag = 'schwarzDPPGradient'
-//     } else if (shader.type == "schwarzDPPSmooth") {
-//         frag = 'schwarzDPPSmooth'
-//     } else if (shader.type == "gyroidSmooth") {
-//         frag = 'gyroidSmooth'
-//     }
-
-//     shaderProgram = new Shader('vertShader', frag);
-//     // Activate the shader program
-//     shaderProgram.UseProgram();
-
-// }
 
 // resizes canvas to fit browser window
 var resize = function (canvas) {

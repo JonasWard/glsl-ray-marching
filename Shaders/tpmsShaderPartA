@@ -17,8 +17,8 @@ uniform float ppScale;
 uniform vec3 preScales;
 
 // color scheme
-const vec3 color1 = vec3(1., 1., 1.);
-const vec3 color2 = vec3(0., 0., 0.);
+uniform vec3 color1;
+uniform vec3 color2;
 
 // user interraction
 uniform vec2 mousePosition;
