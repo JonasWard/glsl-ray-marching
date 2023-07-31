@@ -263,7 +263,7 @@ var start = function () {
   btn.addEventListener('click', () => {
     drawScene();
     canvas.toBlob((blob) => {
-      saveBlob(blob, `screencapture-${2 * canvas.width}x${2 * canvas.height}.tiff`);
+      saveBlob(blob, `screencapture-${2 * canvas.width}x${2 * canvas.height}.png`);
     });
   });
 
