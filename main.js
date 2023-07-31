@@ -462,8 +462,8 @@ var drawScene = function () {
 
   shaderProgram.SetUniformVec3('color1', [colorData.color0.r / 255, colorData.color0.g / 255, colorData.color0.b / 255]);
   shaderProgram.SetUniformVec3('color2', [colorData.color1.r / 255, colorData.color1.g / 255, colorData.color1.b / 255]);
-  shaderProgram.SetUniform1f('steps', colorData.discreteSteps);
   shaderProgram.SetUniform1f('shift', colorData.discreteShift);
+  shaderProgram.SetUniform1f('steps', colorData.discreteSteps - 1);
 
   shaderProgram.SetUniformVec3('preScales', [
     Math.round(Math.pow(10, scales.preProcessingA)),
