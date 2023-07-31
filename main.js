@@ -4,8 +4,8 @@ var mesh, timer, shaderProgram;
 // the definition of an sdf methods needs to define
 
 const canvasSizes = {
-  width: 1000,
-  height: 1000,
+  width: window.innerWidth,
+  height: window.innerHeight,
 };
 
 dat.GUI.prototype.removeFolder = function (name) {
@@ -128,7 +128,7 @@ var userInput = new (function () {
   this.mousePosition = [0, 0];
   this.mouseDelta = [0, 0];
   this.output = [0, 0];
-  this.rotation = 0.0;
+  this.rotation = 0.785;
   this.reset = false;
 })();
 
@@ -177,9 +177,9 @@ var postDict = {
 
 var functions = new (function () {
   this.pre = 'none';
-  this.f1 = 'gyroid';
-  this.f2 = 'schwarzD';
-  this.f3 = 'schwarzP';
+  this.f1 = 'perlin';
+  this.f2 = 'schwarzP';
+  this.f3 = 'none';
   this.post = 'none';
 })();
 
