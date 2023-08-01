@@ -18,63 +18,7 @@ dat.GUI.prototype.hide = () => (this.domElement.style.display = 'none');
 
 dat.GUI.prototype.show = () => (this.domElement.style.display = '');
 
-const data = {
-  'all the data in this file': 0,
-};
-
-const saveMethod = () => {
-  const a = document.createElement('a');
-  document.body.appendChild(a);
-  a.style = 'display: none';
-  const fileName = 'pattern_settings.json';
-  const jsonObject = JSON.stringify(data),
-    blob = new Blob([jsonObject], { type: 'octet/stream' }),
-    url = window.URL.createObjectURL(blob);
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  window.URL.revokeObjectURL(url);
-};
-
-const saving = {
-  saving: saveMethod,
-};
-
-// user adjustable variables
-const canvasSizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
-
-const scales = {
-  preProcessingA: 2,
-  preProcessingB: 2,
-  preProcessingC: 0,
-  distanceA: -1.8,
-  distanceB: -1.0,
-  distanceC: -1.0,
-  postProcessing: 0,
-};
-
-const userInput = {
-  zoomLevel: 1,
-  base: [0, 0],
-  origin: [0, 0],
-  mousePosition: [0, 0],
-  mouseDelta: [0, 0],
-  output: [0, 0],
-  rotation: 0.785,
-  reset: false,
-};
-
-const colorData = {
-  isDiscrete: false,
-  discreteSteps: 10,
-  colorShift: 0.5,
-  color0: [0, 255, 255],
-  color1: [0, 0, 255],
-};
-
+// definition of different sdf methods
 const preProcessing = ['sin', 'cos', 'modTiling', 'modAlternate', 'complexTiling', 'none', 'scale'];
 
 const preDict = {
@@ -108,14 +52,6 @@ const postDict = {
   sin: 'sin',
   cos: 'cos',
   none: null,
-};
-
-const functions = {
-  pre: 'none',
-  f1: 'perlin',
-  f2: 'schwarzP',
-  f3: 'none',
-  post: 'none',
 };
 
 const constructSDFData = (pre, f1, f2, f3, post) => {
@@ -218,6 +154,26 @@ const functions = {
   f2: 'schwarzP',
   f3: 'none',
   post: 'none',
+};
+
+// saving and loading methods
+const saveMethod = () => {
+  const a = document.createElement('a');
+  document.body.appendChild(a);
+  a.style = 'display: none';
+
+  const fileName = 'pattern_settings.json';
+  const jsonObject = JSON.stringify(data),
+    blob = new Blob([jsonObject], { type: 'octet/stream' }),
+    url = window.URL.createObjectURL(blob);
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(url);
+};
+
+const saving = {
+  saving: saveMethod,
 };
 
 // start() is the main function that gets called first by index.html
