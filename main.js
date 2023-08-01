@@ -177,6 +177,49 @@ const constructFragShader = (sdfString = null) => {
   return shader;
 };
 
+// user adjustable variables
+const canvasSizes = {
+  width: window.innerWidth,
+  height: window.innerHeight,
+};
+
+const scales = {
+  preProcessingA: 2,
+  preProcessingB: 2,
+  preProcessingC: 0,
+  distanceA: -1.8,
+  distanceB: -1.0,
+  distanceC: -1.0,
+  postProcessing: 0,
+};
+
+const userInput = {
+  zoomLevel: 1,
+  base: [0, 0],
+  origin: [0, 0],
+  mousePosition: [0, 0],
+  mouseDelta: [0, 0],
+  output: [0, 0],
+  rotation: 0.785,
+  reset: false,
+};
+
+const colorData = {
+  isDiscrete: false,
+  discreteSteps: 10,
+  colorShift: 0.5,
+  color0: [0, 255, 255],
+  color1: [0, 0, 255],
+};
+
+const functions = {
+  pre: 'none',
+  f1: 'perlin',
+  f2: 'schwarzP',
+  f3: 'none',
+  post: 'none',
+};
+
 // start() is the main function that gets called first by index.html
 const start = () => {
   // Initialize the WebGL 2.0 canvas
