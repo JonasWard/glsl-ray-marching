@@ -158,14 +158,6 @@ const functions = {
   post: 'none',
 };
 
-const defaultData = {
-  canvasSizes: { ...canvasSizes },
-  colorData: { ...colorData },
-  functions: { ...functions },
-  scales: { ...scales },
-  userInput: { ...userInput },
-};
-
 const data = {
   canvasSizes,
   colorData,
@@ -173,6 +165,8 @@ const data = {
   scales,
   userInput,
 };
+
+const defaultData = JSON.parse(JSON.stringify(data));
 
 // saving and loading methods
 const saveMethod = () => {
