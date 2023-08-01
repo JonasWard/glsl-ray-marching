@@ -215,11 +215,11 @@ const updateObjectAttributes = (objToUpdate, newObject) => {
 
 const updatePatternSettingsObject = (newPatternObject) => {
   try {
-    if (data.canvasSizes != null) updateObjectAttributes(canvasSizes, data.canvasSizes);
-    if (data.colorData != null) updateObjectAttributes(colorData, data.colorData);
-    if (data.functions != null) updateObjectAttributes(functions, data.functions);
-    if (data.scales != null) updateObjectAttributes(scales, data.scales);
-    if (data.userInput != null) updateObjectAttributes(userInput, data.userInput);
+    if (newPatternObject.canvasSizes != null) updateObjectAttributes(canvasSizes, newPatternObject.canvasSizes);
+    if (newPatternObject.colorData != null) updateObjectAttributes(colorData, newPatternObject.colorData);
+    if (newPatternObject.functions != null) updateObjectAttributes(functions, newPatternObject.functions);
+    if (newPatternObject.scales != null) updateObjectAttributes(scales, newPatternObject.scales);
+    if (newPatternObject.userInput != null) updateObjectAttributes(userInput, newPatternObject.userInput);
   } catch (e) {
     console.log(e);
   }
