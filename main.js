@@ -29,68 +29,6 @@ dat.GUI.prototype.show = function () {
   this.domElement.style.display = '';
 };
 
-function HSVtoRGB(c) {
-  //method that returns r,g,b [0->1] from hsv color object
-
-  // adjust to match p5 format
-  let i = Math.floor(c.h * 6);
-  let f = c.h / 60 - i;
-  let p = c.v * (1 - c.s);
-  let q = c.v * (1 - f * c.s);
-  let t = c.v * (1 - (1 - f) * c.s);
-  switch (i % 6) {
-    case 0:
-      (c.r = c.v), (c.g = t), (c.b = p);
-      break;
-    case 1:
-      (c.r = q), (c.g = c.v), (c.b = p);
-      break;
-    case 2:
-      (c.r = p), (c.g = c.v), (c.b = t);
-      break;
-    case 3:
-      (c.r = p), (c.g = q), (c.b = c.v);
-      break;
-    case 4:
-      (c.r = t), (c.g = p), (c.b = c.v);
-      break;
-    case 5:
-      (c.r = c.v), (c.g = p), (c.b = q);
-      break;
-  }
-}
-
-class Color {
-  constructor(red, green, blue) {
-    this.isHSV = false;
-    this.r = red;
-    this.g = green;
-    this.b = blue;
-  }
-
-  setHSV(hue, saturation, value) {
-    this.isHSV = true;
-    this.h = hue;
-    this.s = saturation;
-    this.v = value;
-
-    HSVtoRGB(this);
-  }
-
-  setRGB(red, green, blue) {
-    this.isHSV = false;
-    this.r = red;
-    this.g = green;
-    this.b = blue;
-  }
-
-  static fromHSV(hue, saturation, value) {
-    var c = new Color(0, 0, 0);
-    c.setHSV(hue, saturation, value);
-    return c;
-  }
-}
-
 const data = {
   'all the data in this file': 0,
 };
@@ -136,8 +74,8 @@ var colorData = {
   isDiscrete: false,
   discreteSteps: 10,
   colorShift: 0.5,
-  color0: new Color(0, 255, 255),
-  color1: new Color(0, 0, 255),
+  color0: [0, 255, 255],
+  color1: [0, 0, 255],
 };
 
 var preProcessing = ['sin', 'cos', 'modTiling', 'modAlternate', 'complexTiling', 'none', 'scale'];
@@ -414,8 +352,8 @@ var initCanvas = function () {
 
   // adding the color menu
   const colors = gui.addFolder('colors');
-  const c0 = colors.addColor(colorData, 'color0').onChange(() => colorData.color0.setRGB(c0.r, c0.g, c0.b));
-  const c1 = colors.addColor(colorData, 'color1').onChange(() => colorData.color1.setRGB(c1.r, c1.g, c1.b));
+  colors.addColor(colorData, 'color0');
+  colors.addColor(colorData, 'color1');
   colors.add(colorData, 'isDiscrete').onChange(() => switchShader());
   colors.add(colorData, 'discreteSteps', 2, 10).onChange(() => switchShader());
   colors.add(colorData, 'colorShift', 0.0, 1.0).onChange(() => switchShader());
@@ -466,8 +404,8 @@ var drawScene = function () {
 
   shaderProgram.SetUniformVec3('fScales', [Math.pow(10, scales.distanceA), Math.pow(10, scales.distanceB), Math.pow(10, scales.distanceC)]);
 
-  shaderProgram.SetUniformVec3('color1', [colorData.color0.r / 255, colorData.color0.g / 255, colorData.color0.b / 255]);
-  shaderProgram.SetUniformVec3('color2', [colorData.color1.r / 255, colorData.color1.g / 255, colorData.color1.b / 255]);
+  shaderProgram.SetUniformVec3('color1', [colorData.color0[0] / 255, colorData.color0[1] / 255, colorData.color0[2] / 255]);
+  shaderProgram.SetUniformVec3('color2', [colorData.color1[0] / 255, colorData.color1[1] / 255, colorData.color1[2] / 255]);
   shaderProgram.SetUniform1f('steps', colorData.discreteSteps - 1);
   shaderProgram.SetUniform1f('shift', colorData.colorShift);
 
