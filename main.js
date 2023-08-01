@@ -377,35 +377,35 @@ const initCanvas = () => {
 
   const scalesData = gui.addFolder('scales');
   const preProc = scalesData.addFolder('preProcessing');
-  preProc.add(scales, 'preProcessingA', -1.0, 10.0);
-  preProc.add(scales, 'preProcessingB', -1.0, 10.0);
-  preProc.add(scales, 'preProcessingC', -1.0, 10.0);
-  scalesData.add(scales, 'distanceA', -3.0, 5.0);
-  scalesData.add(scales, 'distanceB', -3.0, 5.0);
-  scalesData.add(scales, 'distanceC', -3.0, 5.0);
-  scalesData.add(scales, 'postProcessing', -3.0, 5.0);
+  preProc.add(data.scales, 'preProcessingA', -1.0, 10.0);
+  preProc.add(data.scales, 'preProcessingB', -1.0, 10.0);
+  preProc.add(data.scales, 'preProcessingC', -1.0, 10.0);
+  scalesData.add(data.scales, 'distanceA', -3.0, 5.0);
+  scalesData.add(data.scales, 'distanceB', -3.0, 5.0);
+  scalesData.add(data.scales, 'distanceC', -3.0, 5.0);
+  scalesData.add(data.scales, 'postProcessing', -3.0, 5.0);
 
   const functionDescriptions = gui.addFolder('functions');
-  functionDescriptions.add(functions, 'pre', preProcessing).onChange(() => switchShader());
-  functionDescriptions.add(functions, 'f1', functionNames).onChange(() => switchShader());
-  functionDescriptions.add(functions, 'f2', functionNames).onChange(() => switchShader());
-  functionDescriptions.add(functions, 'f3', functionNames).onChange(() => switchShader());
-  functionDescriptions.add(functions, 'post', postProcessing).onChange(() => switchShader());
+  functionDescriptions.add(data.functions, 'pre', preProcessing).onChange(() => switchShader());
+  functionDescriptions.add(data.functions, 'f1', functionNames).onChange(() => switchShader());
+  functionDescriptions.add(data.functions, 'f2', functionNames).onChange(() => switchShader());
+  functionDescriptions.add(data.functions, 'f3', functionNames).onChange(() => switchShader());
+  functionDescriptions.add(data.functions, 'post', postProcessing).onChange(() => switchShader());
 
   const adjustables = gui.addFolder('user input');
-  adjustables.add(userInput, 'rotation', -3.1415927, 3.1415927);
-  adjustables.add(userInput, 'zoomLevel', -100, 100);
+  adjustables.add(data.userInput, 'rotation', -3.1415927, 3.1415927);
+  adjustables.add(data.userInput, 'zoomLevel', -100, 100);
 
   userInput.reset = false;
 
   const obj = {
     reset: () => {
-      userInput.output = [0, 0];
-      userInput.origin = [0, 0];
-      userInput.mousePosition = [0, 0];
-      userInput.mouseDelta = [0, 0];
-      userInput.zoomLevel = 1;
-      userInput.rotation = 0;
+      data.userInput.output = [0, 0];
+      data.userInput.origin = [0, 0];
+      data.userInput.mousePosition = [0, 0];
+      data.userInput.mouseDelta = [0, 0];
+      data.userInput.zoomLevel = 1;
+      data.userInput.rotation = 0;
     },
   };
   adjustables.add(obj, 'reset');
@@ -418,16 +418,16 @@ const initCanvas = () => {
 
   // adding the color menu
   const colors = gui.addFolder('colors');
-  colors.addColor(colorData, 'color0');
-  colors.addColor(colorData, 'color1');
-  colors.add(colorData, 'isDiscrete').onChange(() => switchShader());
-  colors.add(colorData, 'discreteSteps', 2, 10).onChange(() => switchShader());
-  colors.add(colorData, 'colorShift', 0.0, 1.0).onChange(() => switchShader());
+  colors.addColor(data.colorData, 'color0');
+  colors.addColor(data.colorData, 'color1');
+  colors.add(data.colorData, 'isDiscrete').onChange(() => switchShader());
+  colors.add(data.colorData, 'discreteSteps', 2, 10).onChange(() => switchShader());
+  colors.add(data.colorData, 'colorShift', 0.0, 1.0).onChange(() => switchShader());
 
   // changing the canvas size
   const gameCanvas = document.getElementById('game-surface');
-  gameCanvas.width = canvasSizes.width;
-  gameCanvas.height = canvasSizes.height;
+  gameCanvas.width = data.canvasSizes.width;
+  gameCanvas.height = data.canvasSizes.height;
   const canvasSizeGUI = gui.addFolder('canvas size');
   canvasSizeGUI.add(gameCanvas, 'width', 100, 5000);
   canvasSizeGUI.add(gameCanvas, 'height', 100, 5000);
