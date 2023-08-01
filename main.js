@@ -1,7 +1,6 @@
 let mesh, timer, shaderProgram;
 
-// a sdf method scales the position in space with a certain distance or a distance method
-// the definition of an sdf methods needs to define
+const LOCAL_STORAGE_KEY = 'patternGen0.2';
 
 // setting up base dat.GUI
 dat.GUI.prototype.removeFolder = (name) => {
@@ -111,7 +110,7 @@ const constructFragShader = () => {
   // displaying the shader in the console to be able to easily debug it, also stored when saving a file
   console.log(shader);
 
-  localStorage.setItem('patternGen0.2', JSON.stringify({ canvasSizes, colorData, functions, scales, userInput, shader }));
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ canvasSizes, colorData, functions, scales, userInput, shader }));
 
   return shader;
 };
