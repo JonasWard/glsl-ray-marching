@@ -429,6 +429,13 @@ var initCanvas = function () {
   const canvasSizeGUI = gui.addFolder('canvas size');
   canvasSizes.width = canvasSizeGUI.add(gameCanvas, 'width', 100, 5000);
   canvasSizes.height = canvasSizeGUI.add(gameCanvas, 'height', 100, 5000);
+  const fillWindow = {
+    'fill window': () => {
+      gameCanvas.width = window.innerWidth;
+      gameCanvas.height = window.innerHeight;
+    },
+  };
+  canvasSizeGUI.add(fillWindow, 'fill window');
 };
 
 var drawScene = function () {
