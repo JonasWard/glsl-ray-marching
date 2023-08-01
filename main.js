@@ -243,7 +243,7 @@ const initCanvas = () => {
   gl.enable(gl.BLEND);
   gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
-  canvas.addEventListener('wheel', function (event) {
+  canvas.addEventListener('wheel', (event) => {
     wheelValue = event.deltaY;
 
     if ((event.ctrlKey || event.metaKey) && !event.altKey) {
@@ -263,20 +263,20 @@ const initCanvas = () => {
 
   mousedDownActive = false;
 
-  canvas.addEventListener('mousedown', function (event) {
+  canvas.addEventListener('mousedown', (event) => {
     mousedDownActive = true;
     userInput.mousePosition = [event.x, event.y];
     userInput.output = userInput.origin;
   });
 
-  canvas.addEventListener('mousemove', function (event) {
+  canvas.addEventListener('mousemove', (event) => {
     if (mousedDownActive) {
       userInput.mouseDelta = [event.x - userInput.mousePosition[0], userInput.mousePosition[1] - event.y];
       userInput.output = activePosition(userInput.origin, userInput.zoomLevel, userInput.mouseDelta);
     }
   });
 
-  canvas.addEventListener('mouseup', function () {
+  canvas.addEventListener('mouseup', () => {
     userInput.origin = activePosition(userInput.origin, userInput.zoomLevel, userInput.mouseDelta);
     userInput.output = userInput.origin;
     userInput.mouseDelta = [0, 0];
@@ -311,7 +311,7 @@ const initCanvas = () => {
   userInput.reset = false;
 
   const obj = {
-    reset: function () {
+    reset: () => {
       console.log('reseting parameters');
       userInput.output = [0, 0];
       userInput.origin = [0, 0];
