@@ -49,28 +49,28 @@ const saving = new (function () {
   };
 })();
 
-var scales = new (function () {
-  this.preProcessingA = 2;
-  this.preProcessingB = 2;
-  this.preProcessingC = 0;
-  this.distanceA = -1.8;
-  this.distanceB = -1.0;
-  this.distanceC = -1.0;
-  this.postProcessing = 0;
-})();
+const scales = {
+  preProcessingA: 2,
+  preProcessingB: 2,
+  preProcessingC: 0,
+  distanceA: -1.8,
+  distanceB: -1.0,
+  distanceC: -1.0,
+  postProcessing: 0,
+};
 
-var userInput = new (function () {
-  this.zoomLevel = 1;
-  this.base = [0, 0];
-  this.origin = [0, 0];
-  this.mousePosition = [0, 0];
-  this.mouseDelta = [0, 0];
-  this.output = [0, 0];
-  this.rotation = 0.785;
-  this.reset = false;
-})();
+const userInput = {
+  zoomLevel: 1,
+  base: [0, 0],
+  origin: [0, 0],
+  mousePosition: [0, 0],
+  mouseDelta: [0, 0],
+  output: [0, 0],
+  rotation: 0.785,
+  reset: false,
+};
 
-var colorData = {
+const colorData = {
   isDiscrete: false,
   discreteSteps: 10,
   colorShift: 0.5,
@@ -78,9 +78,9 @@ var colorData = {
   color1: [0, 0, 255],
 };
 
-var preProcessing = ['sin', 'cos', 'modTiling', 'modAlternate', 'complexTiling', 'none', 'scale'];
+const preProcessing = ['sin', 'cos', 'modTiling', 'modAlternate', 'complexTiling', 'none', 'scale'];
 
-var preDict = {
+const preDict = {
   sin: 'sin',
   cos: 'cos',
   modTiling: 'modulus',
@@ -90,9 +90,9 @@ var preDict = {
   none: null,
 };
 
-var functionNames = ['sin', 'cos', 'gyroid', 'schwarzD', 'schwarzP', 'perlin', 'neovius', 'mandelbrot', 'julia', 'none'];
+const functionNames = ['sin', 'cos', 'gyroid', 'schwarzD', 'schwarzP', 'perlin', 'neovius', 'mandelbrot', 'julia', 'none'];
 
-var sdfDict = {
+const sdfDict = {
   sin: 'sdSin',
   cos: 'sdCos',
   gyroid: 'sdGyroid',
@@ -105,21 +105,21 @@ var sdfDict = {
   none: null,
 };
 
-var postProcessing = ['sin', 'cos', 'none'];
+const postProcessing = ['sin', 'cos', 'none'];
 
-var postDict = {
+const postDict = {
   sin: 'sin',
   cos: 'cos',
   none: null,
 };
 
-var functions = new (function () {
-  this.pre = 'none';
-  this.f1 = 'perlin';
-  this.f2 = 'schwarzP';
-  this.f3 = 'none';
-  this.post = 'none';
-})();
+const functions = {
+  pre: 'none',
+  f1: 'perlin',
+  f2: 'schwarzP',
+  f3: 'none',
+  post: 'none',
+};
 
 var constructSDFData = function (pre, f1, f2, f3, post) {
   var sdf_string = '';
