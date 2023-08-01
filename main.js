@@ -3,11 +3,6 @@ let mesh, timer, shaderProgram;
 // a sdf method scales the position in space with a certain distance or a distance method
 // the definition of an sdf methods needs to define
 
-const canvasSizes = {
-  width: window.innerWidth,
-  height: window.innerHeight,
-};
-
 // setting up base dat.GUI
 dat.GUI.prototype.removeFolder = (name) => {
   const folder = this.__folders[name];
@@ -44,6 +39,12 @@ const saveMethod = () => {
 
 const saving = {
   saving: saveMethod,
+};
+
+// user adjustable variables
+const canvasSizes = {
+  width: window.innerWidth,
+  height: window.innerHeight,
 };
 
 const scales = {
