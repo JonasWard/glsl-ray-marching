@@ -119,52 +119,35 @@ const functions = {
   post: 'none',
 };
 
-var constructSDFData = function (pre, f1, f2, f3, post) {
-  var sdf_string = '';
+const constructSDFData = (pre, f1, f2, f3, post) => {
+  let sdf_string = '';
 
-  if (!(sdfDict[f3] == null)) {
-    sdf_string = sdfDict[f3] + '(p, fScales.z)';
-  }
+  if (!(sdfDict[f3] == null)) sdf_string = sdfDict[f3] + '(p, fScales.z)';
 
   if (!(sdfDict[f2] == null)) {
-    if (!(sdf_string.length == 0)) {
-      sdf_string = sdfDict[f2] + '(p, fScales.y * ' + sdf_string + ')';
-    } else {
-      sdf_string = sdfDict[f2] + '(p, fScales.y)';
-    }
+    if (!(sdf_string.length == 0)) sdf_string = sdfDict[f2] + '(p, fScales.y * ' + sdf_string + ')';
+    else sdf_string = sdfDict[f2] + '(p, fScales.y)';
   }
 
   if (!(sdfDict[f1] == null)) {
-    if (!(sdf_string.length == 0)) {
-      sdf_string = sdfDict[f1] + '(p, fScales.x * ' + sdf_string + ')';
-    } else {
-      sdf_string = sdfDict[f1] + '(p, fScales.x)';
-    }
+    if (!(sdf_string.length == 0)) sdf_string = sdfDict[f1] + '(p, fScales.x * ' + sdf_string + ')';
+    else sdf_string = sdfDict[f1] + '(p, fScales.x)';
   }
 
   if (!(postDict[post] == null)) {
-    if (!(sdf_string.length == 0)) {
-      sdf_string = postDict[post] + '(ppScale * ' + sdf_string + ')';
-    } else {
-      sdf_string = '1.';
-    }
+    if (!(sdf_string.length == 0)) sdf_string = postDict[post] + '(ppScale * ' + sdf_string + ')';
+    else sdf_string = '1.';
   }
 
-  if (sdf_string.length == 0) {
-    sdf_string = '1.';
-  }
+  if (sdf_string.length == 0) sdf_string = '1.';
 
-  var pre_calc = '';
-  if (!(preDict[pre] == null)) {
-    pre_calc = '\n\tp = ' + preDict[pre] + '(p);\n';
-  }
+  const pre_calc = '';
+  if (!(preDict[pre] == null)) pre_calc = '\n\tp = ' + preDict[pre] + '(p);\n';
 
-  sdf_string = pre_calc + '\n\treturn ' + sdf_string + ';\n';
-
-  return sdf_string;
+  return pre_calc + '\n\treturn ' + sdf_string + ';\n';
 };
 
-var constructFragShader = function (sdfString = null) {
+const constructFragShader = (sdfString = null) => {
   let shader = '';
 
   // setting the distance part of the shader
@@ -189,20 +172,21 @@ var constructFragShader = function (sdfString = null) {
 
   shader = tpmsShaderA + tpmsShaderSDF + tpmsShaderB + tpmsShaderColor + tpmsShaderC;
 
+  // displaying the shader in the console to be able to easily debug it, also stored when saving a file
   console.log(shader);
 
   return shader;
 };
 
 // start() is the main function that gets called first by index.html
-var start = function () {
+const start = () => {
   // Initialize the WebGL 2.0 canvas
   initCanvas();
 
-  var newFragShader = constructFragShader(constructSDFData(functions.pre, functions.f1, functions.f2, functions.f3, functions.post));
+  const newFragShader = constructFragShader(constructSDFData(functions.pre, functions.f1, functions.f2, functions.f3, functions.post));
 
   //tiff export
-  const saveBlob = (function () {
+  const saveBlob = (() => {
     const a = document.createElement('a');
     document.body.appendChild(a);
     a.style.display = 'none';
@@ -214,7 +198,7 @@ var start = function () {
     };
   })();
 
-  var btn = document.getElementById('save');
+  const btn = document.getElementById('save');
   btn.addEventListener('click', () => {
     drawScene();
     canvas.toBlob((blob) => {
@@ -231,10 +215,10 @@ var start = function () {
   shaderProgram.UseProgram();
 
   // Set vertices of the mesh to be the canonical screen space
-  var vertices = [-1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0];
+  const vertices = [-1.0, -1.0, 1.0, 1.0, -1.0, 1.0, 1.0, -1.0];
 
   // Set indices for the vertices above
-  var indices = [2, 0, 1, 1, 0, 3];
+  const indices = [2, 0, 1, 1, 0, 3];
 
   // Create a mesh based upon the defined vertices and indices
   mesh = new Mesh(vertices, indices, shaderProgram);
@@ -243,21 +227,16 @@ var start = function () {
   drawScene();
 };
 
-var activePosition = function (origin, zoomLevel, mD) {
-  p = [origin[0] + mD[0] / zoomLevel, origin[1] + mD[1] / zoomLevel];
+const activePosition = (origin, zoomLevel, mD) => [origin[0] + mD[0] / zoomLevel, origin[1] + mD[1] / zoomLevel];
 
-  return p;
-};
-
-function switchShader() {
-  var newFragShader = constructFragShader(constructSDFData(functions.pre, functions.f1, functions.f2, functions.f3, functions.post));
-
+const switchShader = () => {
+  const newFragShader = constructFragShader(constructSDFData(functions.pre, functions.f1, functions.f2, functions.f3, functions.post));
   shaderProgram = new Shader('vertShader', newFragShader);
   shaderProgram.UseProgram();
-}
+};
 
 // starts the canvas and gl
-var initCanvas = function () {
+const initCanvas = () => {
   canvas = document.getElementById('game-surface');
   gl = canvas.getContext('webgl', { preserveDrawingBuffer: true }); // WebGL 2
   gl.enable(gl.DEPTH_TEST);
@@ -306,10 +285,10 @@ var initCanvas = function () {
     mousedDownActive = false;
   });
 
-  var gui = new dat.GUI();
+  const gui = new dat.GUI();
 
-  var scalesData = gui.addFolder('scales');
-  var preProc = scalesData.addFolder('preProcessing');
+  const scalesData = gui.addFolder('scales');
+  const preProc = scalesData.addFolder('preProcessing');
   preProc.add(scales, 'preProcessingA', -1.0, 10.0);
   preProc.add(scales, 'preProcessingB', -1.0, 10.0);
   preProc.add(scales, 'preProcessingC', -1.0, 10.0);
@@ -318,20 +297,20 @@ var initCanvas = function () {
   scalesData.add(scales, 'distanceC', -3.0, 5.0);
   scalesData.add(scales, 'postProcessing', -3.0, 5.0);
 
-  var functionDescriptions = gui.addFolder('functions');
+  const functionDescriptions = gui.addFolder('functions');
   functionDescriptions.add(functions, 'pre', preProcessing).onChange(() => switchShader());
   functionDescriptions.add(functions, 'f1', functionNames).onChange(() => switchShader());
   functionDescriptions.add(functions, 'f2', functionNames).onChange(() => switchShader());
   functionDescriptions.add(functions, 'f3', functionNames).onChange(() => switchShader());
   functionDescriptions.add(functions, 'post', postProcessing).onChange(() => switchShader());
 
-  var adjustables = gui.addFolder('user input');
+  const adjustables = gui.addFolder('user input');
   adjustables.add(userInput, 'rotation', -3.1415927, 3.1415927);
   adjustables.add(userInput, 'zoomLevel', -100, 100);
 
   userInput.reset = false;
 
-  var obj = {
+  const obj = {
     reset: function () {
       console.log('reseting parameters');
       userInput.output = [0, 0];
@@ -372,7 +351,7 @@ var initCanvas = function () {
   canvasSizeGUI.add(fillWindow, 'fill window');
 };
 
-var drawScene = function () {
+const drawScene = () => {
   normalSceneFrame = window.requestAnimationFrame(drawScene);
 
   userInput.base = [gl.canvas.width * 0.5, gl.canvas.height * 0.5];
@@ -419,10 +398,10 @@ var drawScene = function () {
 };
 
 // resizes canvas to fit browser window
-var resize = function (canvas) {
+const resize = (canvas) => {
   // Lookup the size the browser is displaying the canvas.
-  var displayWidth = canvas.clientWidth;
-  var displayHeight = canvas.clientHeight;
+  const displayWidth = canvas.clientWidth;
+  const displayHeight = canvas.clientHeight;
 
   // Check if the canvas is not the same size.
   if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
