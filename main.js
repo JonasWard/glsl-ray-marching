@@ -12,7 +12,6 @@ dat.GUI.prototype.removeFolder = (name) => {
   folder.close();
   this.__ul.removeChild(folder.domElement.parentNode);
   delete this.__folders[name];
-  this.onResize();
 };
 
 dat.GUI.prototype.hide = () => (this.domElement.style.display = 'none');
@@ -357,7 +356,6 @@ const drawScene = () => {
   userInput.base = [gl.canvas.width * 0.5, gl.canvas.height * 0.5];
 
   // Adjust scene for any canvas resizing
-  // resize(gl.canvas);
   // Update the viewport to the current canvas size
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
@@ -395,19 +393,4 @@ const drawScene = () => {
 
   // Tell WebGL to draw the scene
   mesh.Draw();
-};
-
-// resizes canvas to fit browser window
-const resize = (canvas) => {
-  // Lookup the size the browser is displaying the canvas.
-  const displayWidth = canvas.clientWidth;
-  const displayHeight = canvas.clientHeight;
-
-  // Check if the canvas is not the same size.
-  if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
-    // Make the canvas the same size
-    canvas.width = displayWidth;
-    canvas.height = displayHeight;
-    aspectRatio = displayWidth / displayHeight;
-  }
 };
