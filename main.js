@@ -1,4 +1,4 @@
-var mesh, timer, shaderProgram;
+let mesh, timer, shaderProgram;
 
 // a sdf method scales the position in space with a certain distance or a distance method
 // the definition of an sdf methods needs to define
