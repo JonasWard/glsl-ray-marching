@@ -200,17 +200,29 @@ const saveMethod = () => {
   window.URL.revokeObjectURL(url);
 };
 
+// updating object in place helper method
+const updateObjectAttributes = (objToUpdate, newObject) => {
+  for (const key of Object.keys(newObject)) objToUpdate[key] = newObject[key];
+};
+
+const updatePatternSettingsObject = (newPatternObject) => {
+  try {
+    if (data.canvasSizes != null) updateObjectAttributes(canvasSizes, data.canvasSizes);
+    if (data.colorData != null) updateObjectAttributes(colorData, data.colorData);
+    if (data.functions != null) updateObjectAttributes(functions, data.functions);
+    if (data.scales != null) updateObjectAttributes(scales, data.scales);
+    if (data.userInput != null) updateObjectAttributes(userInput, data.userInput);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 // loading method
 const loadMethod = () => {
   // Create a file input element
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.json';
-
-  // updating object in place helper method
-  const update = (objToUpdate, newObject) => {
-    for (const key of Object.keys(newObject)) objToUpdate[key] = newObject[key];
-  };
 
   // Add an event listener for when the file is selected
   input.addEventListener('change', () => {
@@ -226,15 +238,7 @@ const loadMethod = () => {
       data = JSON.parse(reader.result);
 
       // Log the data to the console
-      try {
-        if (data.canvasSizes != null) update(canvasSizes, data.canvasSizes);
-        if (data.colorData != null) update(colorData, data.colorData);
-        if (data.functions != null) update(functions, data.functions);
-        if (data.scales != null) update(scales, data.scales);
-        if (data.userInput != null) update(userInput, data.userInput);
-      } catch (e) {
-        console.log(e);
-      }
+      updatePatternSettingsObject(data);
     });
 
     // Read the file as a text
