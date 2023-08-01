@@ -75,7 +75,7 @@ const constructSDFData = (pre, f1, f2, f3, post) => {
 
   if (sdf_string.length == 0) sdf_string = '1.';
 
-  const pre_calc = '';
+  let pre_calc = '';
   if (!(preDict[pre] == null)) pre_calc = '\n\tp = ' + preDict[pre] + '(p);\n';
 
   return pre_calc + '\n\treturn ' + sdf_string + ';\n';
