@@ -111,6 +111,8 @@ const constructFragShader = () => {
   // displaying the shader in the console to be able to easily debug it, also stored when saving a file
   console.log(shader);
 
+  localStorage.setItem('patternGen0.2', JSON.stringify({ canvasSizes, colorData, functions, scales, userInput, shader }));
+
   return shader;
 };
 
