@@ -8,12 +8,11 @@ const canvasSizes = {
   height: window.innerHeight,
 };
 
-dat.GUI.prototype.removeFolder = function (name) {
-  var folder = this.__folders[name];
+// setting up base dat.GUI
+dat.GUI.prototype.removeFolder = (name) => {
+  const folder = this.__folders[name];
 
-  if (!folder) {
-    return;
-  }
+  if (!folder) return;
 
   folder.close();
   this.__ul.removeChild(folder.domElement.parentNode);
@@ -21,13 +20,9 @@ dat.GUI.prototype.removeFolder = function (name) {
   this.onResize();
 };
 
-dat.GUI.prototype.hide = function () {
-  this.domElement.style.display = 'none';
-};
+dat.GUI.prototype.hide = () => (this.domElement.style.display = 'none');
 
-dat.GUI.prototype.show = function () {
-  this.domElement.style.display = '';
-};
+dat.GUI.prototype.show = () => (this.domElement.style.display = '');
 
 const data = {
   'all the data in this file': 0,
