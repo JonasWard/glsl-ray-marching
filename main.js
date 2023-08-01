@@ -460,26 +460,26 @@ const drawScene = () => {
   shaderProgram.SetUniformVec2('resolution', [gl.canvas.width, gl.canvas.height]);
   shaderProgram.SetUniform1f('time', timer.GetTicksInRadians());
   shaderProgram.SetUniform1f('fractalIncrementer', timer.GetFractalIncrement());
-  shaderProgram.SetUniformVec2('base', userInput.base);
-  shaderProgram.SetUniform1f('rotation', userInput.rotation);
+  shaderProgram.SetUniformVec2('base', data.userInput.base);
+  shaderProgram.SetUniform1f('rotation', data.userInput.rotation);
 
-  shaderProgram.SetUniformVec2('mousePosition', userInput.output);
+  shaderProgram.SetUniformVec2('mousePosition', data.userInput.output);
 
-  shaderProgram.SetUniform1f('zoomLevel', userInput.zoomLevel);
+  shaderProgram.SetUniform1f('zoomLevel', data.userInput.zoomLevel);
 
-  shaderProgram.SetUniformVec3('fScales', [Math.pow(10, scales.distanceA), Math.pow(10, scales.distanceB), Math.pow(10, scales.distanceC)]);
+  shaderProgram.SetUniformVec3('fScales', [Math.pow(10, data.scales.distanceA), Math.pow(10, data.scales.distanceB), Math.pow(10, data.scales.distanceC)]);
 
-  shaderProgram.SetUniformVec3('color1', [colorData.color0[0] / 255, colorData.color0[1] / 255, colorData.color0[2] / 255]);
-  shaderProgram.SetUniformVec3('color2', [colorData.color1[0] / 255, colorData.color1[1] / 255, colorData.color1[2] / 255]);
-  shaderProgram.SetUniform1f('steps', colorData.discreteSteps - 1);
-  shaderProgram.SetUniform1f('shift', colorData.colorShift);
+  shaderProgram.SetUniformVec3('color1', [data.colorData.color0[0] / 255, data.colorData.color0[1] / 255, data.colorData.color0[2] / 255]);
+  shaderProgram.SetUniformVec3('color2', [data.colorData.color1[0] / 255, data.colorData.color1[1] / 255, data.colorData.color1[2] / 255]);
+  shaderProgram.SetUniform1f('steps', data.colorData.discreteSteps - 1);
+  shaderProgram.SetUniform1f('shift', data.colorData.colorShift);
 
   shaderProgram.SetUniformVec3('preScales', [
-    Math.round(Math.pow(10, scales.preProcessingA)),
-    Math.round(Math.pow(10, scales.preProcessingB)),
-    Math.pow(10, scales.preProcessingC),
+    Math.round(Math.pow(10, data.scales.preProcessingA)),
+    Math.round(Math.pow(10, data.scales.preProcessingB)),
+    Math.pow(10, data.scales.preProcessingC),
   ]);
-  shaderProgram.SetUniform1f('ppScale', Math.pow(10, scales.postProcessing));
+  shaderProgram.SetUniform1f('ppScale', Math.pow(10, data.scales.postProcessing));
 
   // Tell WebGL to draw the scene
   mesh.Draw();
