@@ -331,7 +331,7 @@ var initCanvas = function () {
   canvas.addEventListener('wheel', function (event) {
     wheelValue = event.deltaY;
 
-    if (event.ctrlKey || event.metaKey) {
+    if ((event.ctrlKey || event.metaKey) && !event.altKey) {
       event.preventDefault();
       if (event.deltaY < 0) {
         userInput.rotation += 0.1;
@@ -340,11 +340,9 @@ var initCanvas = function () {
       }
     } else if (event.altKey) {
       event.preventDefault();
-      if (event.deltaY < 0) {
-        userInput.zoomLevel *= 1.1;
-      } else if (event.deltaY > 0) {
-        userInput.zoomLevel *= 0.9;
-      }
+      const scaleValue = event.ctrlKey ? 0.01 : 0.1;
+      if (event.deltaY < 0) userInput.zoomLevel *= 1 + scaleValue;
+      else if (event.deltaY > 0) userInput.zoomLevel *= 1 - scaleValue;
     }
   });
 
