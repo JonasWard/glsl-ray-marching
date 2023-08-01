@@ -172,7 +172,25 @@ const saveMethod = () => {
     shader: constructFragShader(),
   };
 
-  const fileName = 'pattern_settings.json';
+  const filenameMethod = () => {
+    const d = new Date();
+    const year = d.getFullYear().toString().slice(-2);
+    const month = d.getMonth();
+    const day = d.getDate();
+    const hours = d.getHours();
+    const minutes = d.getMinutes();
+    const seconds = d.getSeconds();
+
+    // function name
+    let function_name = '';
+    if (functions.f1 != 'none') function_name += '_' + functions.f1;
+    if (functions.f2 != 'none') function_name += '_' + functions.f2;
+    if (functions.f3 != 'none') function_name += '_' + functions.f3;
+
+    return `${year}-${month}-${day}_${hours}-${minutes}-${seconds}_PatternGen_02` + function_name + `.json`;
+  };
+
+  const fileName = filenameMethod();
   const jsonObject = JSON.stringify(data),
     blob = new Blob([jsonObject], { type: 'octet/stream' }),
     url = window.URL.createObjectURL(blob);
