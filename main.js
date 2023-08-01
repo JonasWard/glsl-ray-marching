@@ -165,20 +165,19 @@ const defaultData = {
   userInput: { ...userInput },
 };
 
+const data = {
+  canvasSizes,
+  colorData,
+  functions,
+  scales,
+  userInput,
+};
+
 // saving and loading methods
 const saveMethod = () => {
   const a = document.createElement('a');
   document.body.appendChild(a);
   a.style = 'display: none';
-
-  const data = {
-    canvasSizes,
-    colorData,
-    functions,
-    scales,
-    userInput,
-    shader: constructFragShader(),
-  };
 
   const filenameMethod = () => {
     const d = new Date();
@@ -199,7 +198,7 @@ const saveMethod = () => {
   };
 
   const fileName = filenameMethod();
-  const jsonObject = JSON.stringify(data),
+  const jsonObject = JSON.stringify({ ...data, shader: constructFragShader() }),
     blob = new Blob([jsonObject], { type: 'octet/stream' }),
     url = window.URL.createObjectURL(blob);
   a.href = url;
@@ -215,11 +214,11 @@ const updateObjectAttributes = (objToUpdate, newObject) => {
 
 const updatePatternSettingsObject = (newPatternObject) => {
   try {
-    if (newPatternObject.canvasSizes != null) updateObjectAttributes(canvasSizes, newPatternObject.canvasSizes);
-    if (newPatternObject.colorData != null) updateObjectAttributes(colorData, newPatternObject.colorData);
-    if (newPatternObject.functions != null) updateObjectAttributes(functions, newPatternObject.functions);
-    if (newPatternObject.scales != null) updateObjectAttributes(scales, newPatternObject.scales);
-    if (newPatternObject.userInput != null) updateObjectAttributes(userInput, newPatternObject.userInput);
+    if (newPatternObject.canvasSizes != null) updateObjectAttributes(data.canvasSizes, newPatternObject.canvasSizes);
+    if (newPatternObject.colorData != null) updateObjectAttributes(data.colorData, newPatternObject.colorData);
+    if (newPatternObject.functions != null) updateObjectAttributes(data.functions, newPatternObject.functions);
+    if (newPatternObject.scales != null) updateObjectAttributes(data.scales, newPatternObject.scales);
+    if (newPatternObject.userInput != null) updateObjectAttributes(data.userInput, newPatternObject.userInput);
   } catch (e) {
     console.log(e);
   }
@@ -243,10 +242,10 @@ const loadMethod = () => {
     // Add an event listener for when the file is loaded
     reader.addEventListener('load', () => {
       // Parse the json string into an object
-      data = JSON.parse(reader.result);
+      const newData = JSON.parse(reader.result);
 
       // Log the data to the console
-      updatePatternSettingsObject(data);
+      updatePatternSettingsObject(newData);
     });
 
     // Read the file as a text
