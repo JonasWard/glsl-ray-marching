@@ -266,7 +266,7 @@ const start = () => {
 
   const newFragShader = constructFragShader();
 
-  //tiff export
+  //png export
   const saveBlob = (() => {
     const a = document.createElement('a');
     document.body.appendChild(a);
