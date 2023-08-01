@@ -374,6 +374,8 @@ const initCanvas = () => {
 
   const gui = new dat.GUI();
 
+  if (localStorage.getItem(LOCAL_STORAGE_KEY) != null) updatePatternSettingsObject(JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY)));
+
   const scalesData = gui.addFolder('scales');
   const preProc = scalesData.addFolder('preProcessing');
   preProc.add(data.scales, 'preProcessingA', -1.0, 10.0);
