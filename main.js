@@ -163,6 +163,15 @@ const saveMethod = () => {
   document.body.appendChild(a);
   a.style = 'display: none';
 
+  const data = {
+    canvasSizes,
+    colorData,
+    functions,
+    scales,
+    userInput,
+    shader: constructFragShader(),
+  };
+
   const fileName = 'pattern_settings.json';
   const jsonObject = JSON.stringify(data),
     blob = new Blob([jsonObject], { type: 'octet/stream' }),
