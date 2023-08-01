@@ -157,6 +157,14 @@ const functions = {
   post: 'none',
 };
 
+const defaultData = {
+  canvasSizes: { ...canvasSizes },
+  colorData: { ...colorData },
+  functions: { ...functions },
+  scales: { ...scales },
+  userInput: { ...userInput },
+};
+
 // saving and loading methods
 const saveMethod = () => {
   const a = document.createElement('a');
@@ -249,9 +257,12 @@ const loadMethod = () => {
   input.click();
 };
 
+const resetMethod = () => updatePatternSettingsObject(defaultData);
+
 const saving = {
   saving: saveMethod,
   loading: loadMethod,
+  reset: resetMethod,
 };
 
 // start() is the main function that gets called first by index.html
@@ -402,6 +413,7 @@ const initCanvas = () => {
   const io = gui.addFolder('save / load');
   io.add(saving, 'saving');
   io.add(saving, 'loading');
+  io.add(saving, 'reset');
 
   // adding the color menu
   const colors = gui.addFolder('colors');
