@@ -182,8 +182,54 @@ const saveMethod = () => {
   window.URL.revokeObjectURL(url);
 };
 
+// loading method
+const loadMethod = () => {
+  // Create a file input element
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+
+  // updating object in place helper method
+  const update = (objToUpdate, newObject) => {
+    for (const key of Object.keys(newObject)) objToUpdate[key] = newObject[key];
+  };
+
+  // Add an event listener for when the file is selected
+  input.addEventListener('change', () => {
+    // Get the selected file
+    const file = input.files[0];
+
+    // Create a file reader
+    const reader = new FileReader();
+
+    // Add an event listener for when the file is loaded
+    reader.addEventListener('load', () => {
+      // Parse the json string into an object
+      data = JSON.parse(reader.result);
+
+      // Log the data to the console
+      try {
+        if (data.canvasSizes != null) update(canvasSizes, data.canvasSizes);
+        if (data.colorData != null) update(colorData, data.colorData);
+        if (data.functions != null) update(functions, data.functions);
+        if (data.scales != null) update(scales, data.scales);
+        if (data.userInput != null) update(userInput, data.userInput);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    // Read the file as a text
+    reader.readAsText(file);
+  });
+
+  // Click the input element to open the file dialog
+  input.click();
+};
+
 const saving = {
   saving: saveMethod,
+  loading: loadMethod,
 };
 
 // start() is the main function that gets called first by index.html
@@ -320,7 +366,6 @@ const initCanvas = () => {
 
   const obj = {
     reset: () => {
-      console.log('reseting parameters');
       userInput.output = [0, 0];
       userInput.origin = [0, 0];
       userInput.mousePosition = [0, 0];
@@ -334,6 +379,7 @@ const initCanvas = () => {
   // saving and loading settings
   const io = gui.addFolder('save / load');
   io.add(saving, 'saving');
+  io.add(saving, 'loading');
 
   // adding the color menu
   const colors = gui.addFolder('colors');
