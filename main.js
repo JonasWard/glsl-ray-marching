@@ -82,7 +82,8 @@ const constructSDFData = (pre, f1, f2, f3, post) => {
   return pre_calc + '\n\treturn ' + sdf_string + ';\n';
 };
 
-const constructFragShader = (sdfString = null) => {
+const constructFragShader = () => {
+  const sdfString = constructSDFData(functions.pre, functions.f1, functions.f2, functions.f3, functions.post);
   let shader = '';
 
   // setting the distance part of the shader
@@ -181,7 +182,7 @@ const start = () => {
   // Initialize the WebGL 2.0 canvas
   initCanvas();
 
-  const newFragShader = constructFragShader(constructSDFData(functions.pre, functions.f1, functions.f2, functions.f3, functions.post));
+  const newFragShader = constructFragShader();
 
   //tiff export
   const saveBlob = (() => {
