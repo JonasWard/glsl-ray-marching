@@ -1,111 +1,49 @@
-// webgl link
-precision mediump float;
-
-uniform float time;
-
 // Gyroid Marching
 const float tau = 6.2831853072;
 const float staticZ = 0.;
-
-// // general transformation
-// uniform vec3 mvVec;
-// uniform float alpha;
-
-// function parameters
-uniform vec3 fScales;
-uniform float ppScale;
-uniform vec3 preScales;
-
-// color scheme
-uniform vec3 color1;
-uniform vec3 color2;
-uniform float steps;
-uniform float shift;
-
-// user interraction
-uniform vec2 mousePosition;
-uniform float zoomLevel;
-uniform float rotation;
-uniform vec2 base;
 
 // other static input parameters
 const vec3 mvVec = vec3(0.);
 const float alpha = 1.;
 
-vec3 modulus(vec3 p){
-    return vec3(mod(p.xy, preScales.xy) - preScales.xy * .5, preScales.z);
-}
-
-vec2 alternater(vec2 pInd, vec2 pMod){
-    float coorU = mod(pInd.x/preScales.x, 2.);
-    float coorV = mod(pInd.y/preScales.y, 2.);
-    if ((coorU == 0.) && (coorV == 0.)){
-        return pMod;
-    } else if ((coorU == 1.) && (coorV == 0.)) {
-        return vec2(preScales.x - pMod.x, pMod.y);
-    } else if ((coorU == 0.) && (coorV == 1.)) {
-        return vec2(pMod.x, preScales.y - pMod.y);
-    } else {
-        return vec2(preScales.x - pMod.x, preScales.y - pMod.y);
-    }
-}
-
-vec3 alternate(vec3 p){
-    vec2 pMod = mod(p.xy, preScales.xy);
-    vec2 pInd = p.xy - pMod;
-
-    pMod = alternater(pInd, pMod);
-
-    return vec3(pMod - preScales.xy * .5, preScales.z);
-}
-
-vec3 scalePre(vec3 p){
-    return vec3(p.x / preScales.x, p.y / preScales.y, preScales.z);
+// helper method for calculating the modulus of a value
+float modulusFloat(float a, float b) {
+  return a - (b * floor(a/b));
 }
 
 float signV(float v){
-    if (v < 0.) {
-        return -1.;
-    } else if (v > 0.) {
-        return 1.;
-    } else {
-        return 0.;
-    }
+  if (v < 0.) {
+    return -1.;
+  } else if (v > 0.) {
+    return 1.;
+  } else {
+    return 0.;
+  }
 }
 
 vec2 fgCircusquare(vec2 p){
-    // circle to square mapping assuming that u and v are elements of [-1, 1]
-    float x2 = p.x * p.x;
-    float y2 = p.y * p.y;
-    float sq_l = x2 + y2;
-    float l = sqrt(sq_l);
-    float mult = sqrt(l*(l - sqrt(sq_l - 4. * x2 * y2)));
-    return vec2(
-        signV(p.x)*mult/(1.41421 * p.x),
-        signV(p.y)*mult/(1.41421 * p.y)
-    );
+  // circle to square mapping assuming that u and v are elements of [-1, 1]
+  float x2 = p.x * p.x;
+  float y2 = p.y * p.y;
+  float sq_l = x2 + y2;
+  float l = sqrt(sq_l);
+  float mult = sqrt(l*(l - sqrt(sq_l - 4. * x2 * y2)));
+  return vec2(
+    signV(p.x)*mult/(1.41421 * p.x),
+    signV(p.y)*mult/(1.41421 * p.y)
+  );
 }
 
 vec2 fgSquircular(vec2 p){
-    // square to circle mapping assuming that x and y are elements of [-1, 1]
-    float l = length(p);
-    float sq_l = l * l;
-    float x2 = p.x * p.x;
-    float y2 = p.y * p.y;
-    float top = sqrt(sq_l - x2 * y2);
-    float mult = top / l;
+  // square to circle mapping assuming that x and y are elements of [-1, 1]
+  float l = length(p);
+  float sq_l = l * l;
+  float x2 = p.x * p.x;
+  float y2 = p.y * p.y;
+  float top = sqrt(sq_l - x2 * y2);
+  float mult = top / l;
 
-    return vec2(p.x * mult, p.y * mult);
-}
-
-vec3 complex(vec3 p){
-    vec2 pMod = mod(p.xy, preScales.xy);
-    vec2 pInd = p.xy - pMod;
-
-    pMod = alternater(pInd, pMod);
-    vec2 pXY = pMod * 2. - preScales.xy;
-    pXY = fgSquircular(vec2(pXY.x / (preScales.x-0.00001), pXY.y / preScales.y-0.00001));
-    return vec3(pXY.x * preScales.x * .5, pXY.y * preScales.y *.5, preScales.z);
+  return vec2(p.x * mult, p.y * mult);
 }
 
 //	Classic Perlin 3D Noise 
@@ -184,9 +122,9 @@ float cnoise(vec3 P){
 }
 
 float sdPerlin(vec3 p, float scale) {
-    p *= scale;
-    float d = cnoise(p);
-    return d;
+  p *= scale;
+  float d = cnoise(p);
+  return d;
 }
 
 // mandelbrot
@@ -195,16 +133,16 @@ vec2 complexMult(vec2 a, vec2 b) {
 }
 
 float testMandelbrot(vec2 coord) {
-    // turn this up to 5000 or so if you have a good gpu
-    // for better details but less vibrant color in extreme zoom
-    const int iterations = 912;
+  // turn this up to 5000 or so if you have a good gpu
+  // for better details but less vibrant color in extreme zoom
+  const int iterations = 912;
 	vec2 testPoint = vec2(0,0);
 	for (int i = 0; i < iterations; i++){
 		testPoint = complexMult(testPoint,testPoint) + coord;
-        float ndot = dot(testPoint,testPoint);
+    float ndot = dot(testPoint,testPoint);
 		if (ndot > 45678.0) {
-            float sl = float(i) - log2(log2(ndot))+4.0;
-			return sl/float(iterations) * 2.5;
+      float sl = float(i) - log2(log2(ndot))+4.0;
+      return sl/float(iterations) * 2.5;
 		}
 	}
 	return 0.0;
@@ -233,55 +171,57 @@ float julliaSet(vec2 c) {
 }
 
 float sdMandelbrot(vec3 p, float scale){
-    return testMandelbrot(vec2(p.x, p.y) * scale);
+  return testMandelbrot(vec2(p.x, p.y) * scale);
 }
 
 float sdJulia(vec3 p, float scale){
-    return julliaSet(vec2(p.x, p.y) * scale);
+  return julliaSet(vec2(p.x, p.y) * scale);
 }
 
 float sdSin(vec3 p, float scale) {
-    p *= scale;
-    float d = length(sin(p));
-    d *= .5777; // 1 / sqrt(3)
+  p *= scale;
+  float d = length(sin(p));
+  d *= .5777; // 1 / sqrt(3)
 	return d;
 }
 
 float sdCos(vec3 p, float scale) {
-    p *= scale;
-    float d = length(cos(p));
-    d *= .5777; // 1 / sqrt(3)
+  p *= scale;
+  float d = length(cos(p));
+  d *= .5777; // 1 / sqrt(3)
 	return d;
 }
 
 float sdGyroid(vec3 p, float scale) {
-    p *= scale;
-    float d = dot(sin(p), cos(p.yzx) );
-    d *= .3333;
+  p *= scale;
+  float d = dot(sin(p), cos(p.yzx) );
+  d *= .3333;
 	return d;
 }
 
 float sdSchwarzD(vec3 p, float scale) {
-    p *= scale;
-    vec3 s = sin(p);
-    vec3 c = cos(p);
-    float d = s.x * s.y * s.z + s.x * c.y * c.z + c.x * s.y * c.z + c.x * c.y * s.z;
-    d *= .3333;
+  p *= scale;
+  vec3 s = sin(p);
+  vec3 c = cos(p);
+  float d = s.x * s.y * s.z + s.x * c.y * c.z + c.x * s.y * c.z + c.x * c.y * s.z;
+  d *= .3333;
 	return d;
 }
 
 float sdSchwarzP(vec3 p, float scale) {
-    p *= scale;
-    p = cos(p);
-    float d = p.x + p.y + p.z;
-    d *= .3333;
+  p *= scale;
+  p = cos(p);
+  float d = p.x + p.y + p.z;
+  d *= .3333;
 	return d;
 }
 
 float sdNeovius(vec3 p, float scale) {
-    p *= scale;
-    p = cos(p);
-    return (3.*(p.x+p.y+p.z)+4.*p.x*p.y*p.z) * 0.0769; // 1/13. -> domain Neovius
+  p *= scale;
+  p = cos(p);
+  return (3.*(p.x+p.y+p.z)+4.*p.x*p.y*p.z) * 0.0769; // 1/13. -> domain Neovius
 }
 
-float GetDist(vec3 p) {
+vec2 rotate(vec2 v, float r) {
+  return vec2(v.x * cos(r) - v.y * sin(r), v.x * sin(r) + v.y * cos(r));
+}
