@@ -1,16 +1,37 @@
 import { DataEntryFactory } from 'url-safe-bitpacking';
 import { AttributeNames } from '../enums/attributeNames';
-import { ArrayEntryDataType, SingleLevelContentType } from 'url-safe-bitpacking/dist/types';
+import { ArrayEntryDataType, NestedContentType, OptionalEntryDataType, SingleLevelContentType } from 'url-safe-bitpacking/dist/types';
+import { MainMethodLabels, PostProcessingMethodLabels } from './methodSemantics';
 
-const versionStack: ArrayEntryDataType = [
+const mainMethodVersionStack: ArrayEntryDataType = [
   [1, 3],
-  [DataEntryFactory.createEnum(0, 6, `${AttributeNames.MethodEnum}`), DataEntryFactory.createFloat(1, 0.001, 1000, 3, `${AttributeNames.MethodScale}`)],
+  [
+    DataEntryFactory.createEnum(0, MainMethodLabels.length - 1, `${AttributeNames.MethodEnumMain}`),
+    DataEntryFactory.createFloat(1, 0.001, 1000, 3, `${AttributeNames.MethodScale}`),
+  ],
+];
+const preMethodStack: OptionalEntryDataType = [
+  false,
+  [],
+  [
+    DataEntryFactory.createEnum(0, PostProcessingMethodLabels.length - 1, `${AttributeNames.MethodEnumPre}`),
+    DataEntryFactory.createFloat(1, 0.1, 100, 3, `${AttributeNames.XSpacing}`),
+    DataEntryFactory.createFloat(1, 0.1, 100, 3, `${AttributeNames.YSpacing}`),
+  ],
+];
+const postMethodStack: OptionalEntryDataType = [
+  false,
+  [],
+  [
+    DataEntryFactory.createEnum(0, PostProcessingMethodLabels.length - 1, `${AttributeNames.MethodEnumPost}`),
+    DataEntryFactory.createFloat(1, 0.001, 1000, 3, `${AttributeNames.MethodScale}`),
+  ],
 ];
 
 const colorArray: ArrayEntryDataType = [
   [2, 10],
   [
-    DataEntryFactory.createInt(0, 0, 255, AttributeNames.R),
+    DataEntryFactory.createInt(255, 0, 255, AttributeNames.R),
     DataEntryFactory.createInt(0, 0, 255, AttributeNames.G),
     DataEntryFactory.createInt(0, 0, 255, AttributeNames.B),
   ],
@@ -30,16 +51,22 @@ export const verionArrayDefinition0: SingleLevelContentType[] = [
       ],
       [
         AttributeNames.MousePosition,
-        [DataEntryFactory.createFloat(1, 0.001, 1000, 3, AttributeNames.Rotation), DataEntryFactory.createFloat(1, 0.001, 1000, 3, AttributeNames.ZoomLevel)],
+        [
+          DataEntryFactory.createFloat(0, 0, 360, 1, AttributeNames.Rotation),
+          DataEntryFactory.createFloat(1, 0.001, 1000, 3, AttributeNames.ZoomLevel),
+          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.X),
+          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.Y),
+          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.Z),
+        ],
       ],
     ],
   ],
   [
     AttributeNames.Methods,
     [
-      [AttributeNames.PreProcessingMethods, versionStack],
-      [AttributeNames.PostProcessingMethods, versionStack],
-      [AttributeNames.MainMethods, versionStack],
+      [AttributeNames.PreProcessingMethods, preMethodStack],
+      [AttributeNames.MainMethods, mainMethodVersionStack],
+      [AttributeNames.PostProcessingMethods, postMethodStack],
     ],
   ],
   [AttributeNames.Shmuck, [DataEntryFactory.createBoolean(false, AttributeNames.DiscreteGradient), [AttributeNames.ColorCount, colorArray]]],

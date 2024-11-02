@@ -1,9 +1,11 @@
 import { EnumSemantics } from 'url-safe-bitpacking';
 import { AttributeNames } from '../enums/attributeNames';
 import { Versions } from './versions';
-import { MethodLabels } from './methodSemantics';
+import { MainMethodLabels, PostProcessingMethodLabels, PreProcessingMethodLabels } from './methodSemantics';
 
 export const versionEnumSemantics: EnumSemantics = {
   [AttributeNames.Version]: Versions,
-  [AttributeNames.MethodEnum]: MethodLabels,
+  [AttributeNames.MethodEnumMain]: MainMethodLabels,
+  [AttributeNames.MethodEnumPost]: PostProcessingMethodLabels,
+  [AttributeNames.MethodEnumPre]: PreProcessingMethodLabels,
 };
