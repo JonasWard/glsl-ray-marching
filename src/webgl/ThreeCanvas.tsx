@@ -4,9 +4,8 @@ import { useData } from '../state';
 import { AttributeNames } from '../modelDefinition/enums/attributeNames';
 import { parserObjects } from '../modelDefinition/model';
 import { ShaderMaterial } from 'three';
-import fsSource from 'src/Shaders/spiralFragmentShader.glsl?raw';
-import vsSource from 'src/Shaders/spiralVertexShader.glsl?raw';
 import { getFragmentShader } from './shaderConstructor';
+import vsSource from 'src/Shaders/tpmsVertexShader.glsl?raw';
 
 const size = 1000;
 
