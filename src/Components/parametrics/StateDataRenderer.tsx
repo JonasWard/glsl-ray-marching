@@ -73,6 +73,7 @@ export const StateDataRenderer: React.FC<ISemtanticsRenderObjectProps> = ({
                 dataEntry={value as DataEntry}
                 updateEntry={updateEntry}
                 versionEnumSemantics={versionEnumSemantics}
+                hidden={getDisplayType(semantic, displayTypeMap) === DisplayType.HIDDEN}
               />
             </ViewWrapper>
           );

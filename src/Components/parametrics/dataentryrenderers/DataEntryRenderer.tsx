@@ -4,16 +4,19 @@ import { IntDataEntryRenderer } from './IntDataEntryRenderer';
 import { VersionDataEntryRenderer } from './VersionDataEntryRenderer';
 import { BooleanDataEntryRenderer } from './BooleanDataEntryRenderer';
 import { EnumDataEntryRenderer } from './EnumDataEntryRenderer';
-import { DataEntry, DataType, VersionEnumSemantics } from 'url-safe-bitpacking';
+import { DataEntry, DataType, EnumSemantics } from 'url-safe-bitpacking';
 
-export interface IDatyEntryRendererProps {
+export type IDatyEntryRendererProps = {
   dataEntry: DataEntry;
   updateEntry: (newValue: DataEntry) => void;
-  versionEnumSemantics?: VersionEnumSemantics;
+  versionEnumSemantics?: EnumSemantics;
   asSlider?: boolean;
-}
+  hidden?: boolean;
+};
 
-export const DataEntryRenderer: React.FC<IDatyEntryRendererProps> = ({ asSlider, dataEntry, updateEntry, versionEnumSemantics }) => {
+export const DataEntryRenderer: React.FC<IDatyEntryRendererProps> = ({ asSlider, dataEntry, updateEntry, versionEnumSemantics, hidden }) => {
+  if (hidden) return null;
+
   switch (dataEntry.type) {
     case DataType.INT:
       return <IntDataEntryRenderer asSlider={asSlider} int={dataEntry} onChange={updateEntry} />;

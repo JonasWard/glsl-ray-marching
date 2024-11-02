@@ -6,7 +6,7 @@ import { shouldUseDrawer } from '../utils/windowMethods';
 import { EnumSemantics, StateDataType } from 'url-safe-bitpacking/dist/types';
 
 const displayTypeMap = {
-  [AttributeNames.Version]: shouldUseDrawer() ? DisplayType.DRAWER : DisplayType.POPOVER,
+  [AttributeNames.Version]: DisplayType.HIDDEN,
   [AttributeNames.Viewport]: shouldUseDrawer() ? DisplayType.DRAWER : DisplayType.POPOVER,
   [AttributeNames.PostProcessingMethods]: shouldUseDrawer() ? DisplayType.DRAWER : DisplayType.POPOVER,
   [AttributeNames.PreProcessingMethods]: shouldUseDrawer() ? DisplayType.DRAWER : DisplayType.POPOVER,
@@ -16,7 +16,7 @@ const displayTypeMap = {
 
 type IParametricInputProps = {
   data: StateDataType;
-  updateEntry: (dataEntry: DataEntry) => void;
+  updateEntry: (dataEntry: DataEntry | DataEntry[]) => void;
   versionEnumSemantics?: EnumSemantics;
 };
 
