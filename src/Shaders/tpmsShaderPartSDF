@@ -1,3 +1,0 @@
-
-    // float d_g = sdGyroid(p, fScales.x );
-    return sdGyroid(p, fScales.x);
