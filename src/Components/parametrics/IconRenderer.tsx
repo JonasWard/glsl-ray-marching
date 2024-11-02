@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { CiLineHeight } from 'react-icons/ci';
-import { FaArchway, FaRegSquare, FaSquareFull, FaKey } from 'react-icons/fa';
+import { FaRegSquare, FaSquareFull, FaKey } from 'react-icons/fa';
 import { FaRegSquareFull } from 'react-icons/fa6';
 import { PiCubeFocusFill, PiPackage } from 'react-icons/pi';
 import { GiFootprint } from 'react-icons/gi';

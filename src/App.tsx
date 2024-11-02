@@ -8,7 +8,7 @@ import { useData } from './state';
 import { ThreeCanvas } from './webgl/ThreeCanvas';
 import { useParams } from 'react-router-dom';
 
-const defaultState = undefined;
+const defaultState = 'CAAAOwNbYDYzAy50TawGGoRAC9mAGfgAPnQ____AAAA';
 
 export const App: React.FC = () => {
   const { stateString } = useParams();
@@ -19,7 +19,7 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    window.history.replaceState(null, 'Same Page Title', `/glslRayMarching/#${parserObjects.stringify(data)}`);
+    window.history.replaceState(null, 'Same Page Title', `/glsl-ray-marching/#${parserObjects.stringify(data)}`);
   }, [data]);
 
   const updateEntry = (update: DataEntry | DataEntry[]): void => useData.getState().setData(parserObjects.updater(useData.getState().data, update));
