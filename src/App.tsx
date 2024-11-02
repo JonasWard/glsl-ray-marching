@@ -25,9 +25,9 @@ export const App: React.FC = () => {
   const updateEntry = (update: DataEntry | DataEntry[]): void => useData.getState().setData(parserObjects.updater(useData.getState().data, update));
 
   return (
-    <div>
+    <>
       <ThreeCanvas />
       <ParametricInput data={data} updateEntry={updateEntry} versionEnumSemantics={versionEnumSemantics} />
-    </div>
+    </>
   );
 };
