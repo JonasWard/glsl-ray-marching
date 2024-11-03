@@ -57,8 +57,8 @@ export const getDistanceMethod = (data: any) => {
   const scale = (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.ZoomLevel].value;
   const rotation = ((data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Rotation].value * Math.PI) / 180;
   const position = [
-    (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.X].value * scale,
-    (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Y].value * scale,
+    (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.X].value,
+    (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Y].value,
     (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Z].value,
   ];
 
@@ -72,7 +72,7 @@ export const getDistanceMethod = (data: any) => {
 ${mainMethod}
 
 float getDistance(vec3 p) {
-  vec3 locP = vec3(rotate(p.xy * ${scale.toFixed(3)} - ${vec3Position}.xy, ${rotation.toFixed(3)}),0.0);
+  vec3 locP = ${vec3Position} + vec3(rotate(p.xy * ${scale.toFixed(3)} - ${vec3Position}.xy, ${rotation.toFixed(3)}),0.0);
   ${preMethod}
   float d = getMainDistance(locP);
   ${postMethod}
