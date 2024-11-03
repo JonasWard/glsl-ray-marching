@@ -72,7 +72,7 @@ export const getDistanceMethod = (data: any) => {
 ${mainMethod}
 
 float getDistance(vec3 p) {
-  vec3 locP = ${vec3Position} + vec3(rotate(p.xy * ${scale.toFixed(3)} - ${vec3Position}.xy, ${rotation.toFixed(3)}),0.0);
+  vec3 locP = vec3(rotate(p.xy * ${scale.toFixed(3)} - ${vec3Position}.xy, ${rotation.toFixed(3)}),0.0);
   ${preMethod}
   float d = getMainDistance(locP);
   ${postMethod}
