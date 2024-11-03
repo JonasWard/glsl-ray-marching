@@ -4473,11 +4473,11 @@ const int colorCount = ${e[Be.ColorCount].s.value};
 vec3 COLORS[${e[Be.ColorCount].s.value}] = vec3[](${r.join(",")});
 `},nde=["sdGyroid","sdSchwarzD","sdSchwarzP","sdPerlin","sdNeovius","sdMandelbrot"],rde=t=>{const e=n=>`${nde[n[0][Be.MethodEnumMain].value]}(p, ${n.length>1?`${e(n.slice(1))} *`:""}${n[0][Be.MethodScale].value.toFixed(3)})`;return`float getMainDistance(vec3 p) {
   return ${e(t.v)};
-}`},ide=["sin","cos"],ode=t=>{if(!t.s.value)return"";const e=ide[t.v[Be.MethodEnumPost].value],n=t.v[Be.MethodScale].value.toFixed(3);return`d = ${e}(d / ${n});`},ade=["preSin","preCos","preModulus","preAlternate","preComplex"],sde=t=>{if(!t.s.value)return"";const e=ade[t.v[Be.MethodEnumPre].value],n=t.v[Be.XSpacing].value.toFixed(3),r=t.v[Be.YSpacing].value.toFixed(3);return`locP = ${e}(locP, vec2(${n}, ${r}));`},lde=t=>{const e=t[Be.Viewport][Be.MousePosition][Be.ZoomLevel].value,n=t[Be.Viewport][Be.MousePosition][Be.Rotation].value*Math.PI/180,r=[t[Be.Viewport][Be.MousePosition][Be.X].value,t[Be.Viewport][Be.MousePosition][Be.Y].value,t[Be.Viewport][Be.MousePosition][Be.Z].value],i=`vec3(${r[0].toFixed(3)},${r[1].toFixed(3)},${r[2].toFixed(3)})`,o=rde(t[Be.Methods][Be.MainMethods]),a=sde(t[Be.Methods][Be.PreProcessingMethods]),s=ode(t[Be.Methods][Be.PostProcessingMethods]);return`
+}`},ide=["sin","cos"],ode=t=>{if(!t.s.value)return"";const e=ide[t.v[Be.MethodEnumPost].value],n=t.v[Be.MethodScale].value.toFixed(3);return`d = ${e}(d / ${n});`},ade=["preSin","preCos","preModulus","preAlternate","preComplex"],sde=t=>{if(!t.s.value)return"";const e=ade[t.v[Be.MethodEnumPre].value],n=t.v[Be.XSpacing].value.toFixed(3),r=t.v[Be.YSpacing].value.toFixed(3);return`locP = ${e}(locP, vec2(${n}, ${r}));`},lde=t=>{const e=t[Be.Viewport][Be.MousePosition][Be.ZoomLevel].value,n=t[Be.Viewport][Be.MousePosition][Be.Rotation].value*Math.PI/180,r=[t[Be.Viewport][Be.MousePosition][Be.X].value,t[Be.Viewport][Be.MousePosition][Be.Y].value,t[Be.Viewport][Be.MousePosition][Be.Z].value],i=`vec2(${r[0].toFixed(3)},${r[1].toFixed(3)})`,o=rde(t[Be.Methods][Be.MainMethods]),a=sde(t[Be.Methods][Be.PreProcessingMethods]),s=ode(t[Be.Methods][Be.PostProcessingMethods]);return`
 ${o}
 
 float getDistance(vec3 p) {
-  vec3 locP = ${i} + vec3(rotate(p.xy * ${e.toFixed(3)} - ${i}.xy, ${n.toFixed(3)}),0.0);
+  vec3 locP = vec3((${i} + rotate(p.xy * ${e.toFixed(3)} - ${i}, ${n.toFixed(3)}) ), ${r[2].toFixed(3)});
   ${a}
   float d = getMainDistance(locP);
   ${s}
