@@ -62,7 +62,7 @@ export const getDistanceMethod = (data: any) => {
     (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Z].value,
   ];
 
-  const vec3Position = `vec3(${position[0].toFixed(3)},${position[1].toFixed(3)},${position[2].toFixed(3)})`;
+  const vec2Position = `vec2(${position[0].toFixed(3)},${position[1].toFixed(3)})`;
 
   const mainMethod = getMainMethod((data[AttributeNames.Methods] as any)[AttributeNames.MainMethods]);
   const preMethod = getPreMethod((data[AttributeNames.Methods] as any)[AttributeNames.PreProcessingMethods]);
@@ -72,7 +72,7 @@ export const getDistanceMethod = (data: any) => {
 ${mainMethod}
 
 float getDistance(vec3 p) {
-  vec3 locP = ${vec3Position} + vec3(rotate(p.xy * ${scale.toFixed(3)} - ${vec3Position}.xy, ${rotation.toFixed(3)}),0.0);
+  vec3 locP = vec3((${vec2Position} + rotate(p.xy * ${scale.toFixed(3)} - ${vec2Position}, ${rotation.toFixed(3)}) ), ${position[2].toFixed(3)});
   ${preMethod}
   float d = getMainDistance(locP);
   ${postMethod}
