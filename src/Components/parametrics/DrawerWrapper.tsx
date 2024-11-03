@@ -38,7 +38,7 @@ export const DrawerWrapper: React.FC<IDrawerWrapperProps> = ({ open, toggleOpen,
         {children}
       </Drawer>
       <div style={{ display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'start' }}>
-        <Button disabled={disabled} onClick={() => toggleOpen(!open)} style={{ margin: 8, width: 20 }}>
+        <Button disabled={disabled} onClick={() => toggleOpen(!open)} style={{ position: 'absolute' }}>
           {buttonIcon}
         </Button>
       </div>
