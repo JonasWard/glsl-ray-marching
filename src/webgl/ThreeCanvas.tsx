@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { LegacyRef, useEffect, useRef, useState } from 'react';
 import { useData } from '../state';
 import { AttributeNames } from '../modelDefinition/enums/attributeNames';
 import { parserObjects } from '../modelDefinition/model';
@@ -49,7 +49,7 @@ const Plane = (...props: any) => {
   );
 };
 
-export const ThreeCanvas: React.FC = () => {
+export const ThreeCanvas: React.FC<{ canvasRef: LegacyRef<HTMLCanvasElement> }> = ({ canvasRef }) => {
   const data = useData((s) => s.data);
 
   const [width, setWidth] = useState('100%');
@@ -99,7 +99,14 @@ export const ThreeCanvas: React.FC = () => {
   }, []);
 
   return (
-    <Canvas orthographic camera={{ zoom: 100, position: [0, 0, 1] }} style={{ width, height }}>
+    <Canvas
+      gl={{ preserveDrawingBuffer: true }}
+      key='threejs-canvas'
+      ref={canvasRef}
+      orthographic
+      camera={{ zoom: 100, position: [0, 0, 1] }}
+      style={{ width, height }}
+    >
       <Plane data={data} />
     </Canvas>
   );
