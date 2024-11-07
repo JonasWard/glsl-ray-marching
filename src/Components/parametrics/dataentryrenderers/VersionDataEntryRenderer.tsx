@@ -3,11 +3,12 @@ import React from 'react';
 import { IconRenderer } from '../IconRenderer';
 import { VersionDataEntry, VersionEnumSemantics } from 'url-safe-bitpacking/dist/types';
 
-export interface IVersionDataEntryRendererProps {
+export type IVersionDataEntryRendererProps = {
   version: VersionDataEntry;
   onChange: (newValue: VersionDataEntry) => void;
   versionEnumSemantics?: VersionEnumSemantics;
 }
+};
 
 const defaultSelectorValues = (max: number, key: string) => [...Array(max).keys()].map((i) => ({ value: i, label: `${key} ${i}` }));
 

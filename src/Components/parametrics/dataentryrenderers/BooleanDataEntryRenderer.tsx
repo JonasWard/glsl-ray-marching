@@ -3,10 +3,10 @@ import React from 'react';
 import Checkbox from 'antd/es/checkbox/Checkbox';
 import { BooleanDataEntry } from 'url-safe-bitpacking/dist/types';
 
-export interface IBooleanDataEntryRendererProps {
+export type IBooleanDataEntryRendererProps = {
   bool: BooleanDataEntry;
   onChange: (newValue: BooleanDataEntry) => void;
-}
+};
 
 export const BooleanDataEntryRenderer: React.FC<IBooleanDataEntryRendererProps> = ({ bool, onChange }) => (
   <div style={{ display: 'flex', flexDirection: 'row' }}>

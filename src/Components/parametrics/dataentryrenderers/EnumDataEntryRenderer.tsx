@@ -4,11 +4,11 @@ import { IconRenderer } from '../IconRenderer';
 import { EnumSemantics } from 'url-safe-bitpacking';
 import { EnumDataEntry } from 'url-safe-bitpacking/dist/types';
 
-export interface IEnumDataEntryRendererProps {
+export type IEnumDataEntryRendererProps = {
   enumValue: EnumDataEntry;
   onChange: (newValue: EnumDataEntry) => void;
   versionEnumSemantics?: EnumSemantics;
-}
+};
 
 const defaultSelectorValues = (max: number, key: string) => [...Array(max).keys()].map((i) => ({ value: i, label: `${key} ${i}` }));
 const getVersionEnumSemanticsMap = (enumValue: EnumDataEntry, versionEnumSemantics?: EnumSemantics) => {

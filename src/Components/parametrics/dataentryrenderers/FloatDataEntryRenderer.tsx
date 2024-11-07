@@ -4,13 +4,13 @@ import React from 'react';
 import { FloatDataEntry } from 'url-safe-bitpacking/dist/types';
 import { SliderWrapper } from '../SliderWrapperComponent';
 
-export interface IFloatDataEntryRendererProps {
+export type IFloatDataEntryRendererProps = {
   float: FloatDataEntry;
   onChange: (newValue: FloatDataEntry) => void;
   customMin?: number;
   customMax?: number;
   asSlider?: boolean;
-}
+};
 
 export const FloatDataEntryRenderer: React.FC<IFloatDataEntryRendererProps> = ({ asSlider, float, onChange, customMax, customMin }) =>
   asSlider ? (
