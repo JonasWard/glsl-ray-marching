@@ -1,5 +1,4 @@
 import { DataEntry, EnumSemantics, getDataEntryArray, StateDataType } from 'url-safe-bitpacking';
-import { DataEntryRenderer } from './dataentryrenderers/DataEntryRenderer';
 import { DisplayType, getDisplayType, StateDataRenderer } from './StateDataRenderer';
 import React from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
