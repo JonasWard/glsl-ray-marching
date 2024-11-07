@@ -10,7 +10,7 @@ import { useParams } from 'react-router-dom';
 import { Button, message } from 'antd';
 import { LiaFileDownloadSolid } from 'react-icons/lia';
 
-const defaultState = 'CAAAOwNbYDYzAy50TawGGoRAC9mAGfgAPnQ____AAAA';
+const defaultState = 'C9KEPShD0oQ4Q4Q4QAAAGuPofRAOEAcIgBCpQDnoLEsLD_gAB_gABc2Nj_gAASBQVoqI0';
 
 export const App: React.FC = () => {
   const { stateString } = useParams();
