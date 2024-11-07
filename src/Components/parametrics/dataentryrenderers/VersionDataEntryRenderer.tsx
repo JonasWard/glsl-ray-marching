@@ -1,13 +1,12 @@
 import { Select } from 'antd';
 import React from 'react';
 import { IconRenderer } from '../IconRenderer';
-import { VersionDataEntry, VersionEnumSemantics } from 'url-safe-bitpacking/dist/types';
+import { VersionDataEntry, EnumSemantics } from 'url-safe-bitpacking/dist/types';
 
 export type IVersionDataEntryRendererProps = {
   version: VersionDataEntry;
   onChange: (newValue: VersionDataEntry) => void;
-  versionEnumSemantics?: VersionEnumSemantics;
-}
+  versionEnumSemantics?: EnumSemantics;
 };
 
 const defaultSelectorValues = (max: number, key: string) => [...Array(max).keys()].map((i) => ({ value: i, label: `${key} ${i}` }));
