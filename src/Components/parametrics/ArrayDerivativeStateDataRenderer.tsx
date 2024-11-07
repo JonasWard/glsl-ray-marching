@@ -66,7 +66,7 @@ export const ArrayDerivativeStateDataRenderer: React.FC<IArrayDerivativeStateDat
     <>
       <IntDataEntryRenderer displayStyle='dropdown' key={s.name} int={s} onChange={updateEntry} />
       {v.map((locV, i) => (
-        <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', gap: 6, alignItems: 'center' }}>
+        <div key={i} style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', gap: 6, alignItems: 'center' }}>
           <div style={{ width: canDelete ? '95%' : '100%' }}>
             <StateDataRenderer
               asSlider={asSlider}
