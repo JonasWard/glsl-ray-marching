@@ -30,7 +30,7 @@ export const App: React.FC = () => {
   }, [data]);
 
   useEffect(() => {
-    if (stateString)
+    if (stateString) {
       try {
         const initData = parserObjects.parser(stateString);
         setLocalDataState(initData);
@@ -48,6 +48,19 @@ export const App: React.FC = () => {
           message.error('the default!! state string was not valid, using the default object state instead');
         }
       }
+    } else {
+      try {
+        const initData = parserObjects.parser(defaultState);
+        setLocalDataState(initData);
+        useData.getState().setData(initData);
+        message.warning('the state string you tried to use was not valid, using the default state instead');
+      } catch (e) {
+        const initData = parserObjects.parser();
+        setLocalDataState(initData);
+        useData.getState().setData(initData);
+        message.error('the default!! state string was not valid, using the default object state instead');
+      }
+    }
   }, []);
 
   const setDebouncedInputValue = (newData: StateDataType) => useData.getState().setData(newData);
