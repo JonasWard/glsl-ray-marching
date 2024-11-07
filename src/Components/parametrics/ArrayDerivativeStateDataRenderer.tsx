@@ -4,6 +4,7 @@ import { DisplayType, getDisplayType, StateDataRenderer } from './StateDataRende
 import React from 'react';
 import { FaPlus, FaTrash } from 'react-icons/fa';
 import { IntDataEntry } from 'url-safe-bitpacking/dist/types';
+import { IntDataEntryRenderer } from './dataentryrenderers/IntDataEntryRenderer';
 
 const PREFIX_SEPERATOR_DELIMETER = '_';
 
@@ -64,7 +65,7 @@ export const ArrayDerivativeStateDataRenderer: React.FC<IArrayDerivativeStateDat
 
   return (
     <>
-      <DataEntryRenderer asSlider={asSlider} key={s.name} dataEntry={s} updateEntry={updateEntry} versionEnumSemantics={versionEnumSemantics} />
+      <IntDataEntryRenderer displayStyle='dropdown' key={s.name} int={s} onChange={updateEntry} />
       {v.map((locV, i) => (
         <div style={{ display: 'flex', flexDirection: 'row', height: '100%', width: '100%', gap: 6, alignItems: 'center' }}>
           <div style={{ width: canDelete ? '95%' : '100%' }}>
