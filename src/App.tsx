@@ -7,7 +7,7 @@ import { versionEnumSemantics } from './modelDefinition/types/semantics';
 import { useData } from './state';
 import { ThreeCanvas } from './webgl/ThreeCanvas';
 import { useParams } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { LiaFileDownloadSolid } from 'react-icons/lia';
 
 const defaultState = 'CAAAOwNbYDYzAy50TawGGoRAC9mAGfgAPnQ____AAAA';
@@ -30,9 +30,24 @@ export const App: React.FC = () => {
   }, [data]);
 
   useEffect(() => {
-    const initData = parserObjects.parser(stateString || defaultState);
-    setLocalDataState(initData);
-    useData.getState().setData(initData);
+    if (stateString)
+      try {
+        const initData = parserObjects.parser(stateString);
+        setLocalDataState(initData);
+        useData.getState().setData(initData);
+      } catch (e) {
+        try {
+          const initData = parserObjects.parser(defaultState);
+          setLocalDataState(initData);
+          useData.getState().setData(initData);
+          message.warning('the state string you tried to use was not valid, using the default state instead');
+        } catch (e) {
+          const initData = parserObjects.parser();
+          setLocalDataState(initData);
+          useData.getState().setData(initData);
+          message.error('the default!! state string was not valid, using the default object state instead');
+        }
+      }
   }, []);
 
   const setDebouncedInputValue = (newData: StateDataType) => useData.getState().setData(newData);
