@@ -35,4 +35,7 @@ export enum AttributeNames {
   X = 'X',
   Y = 'Y',
   Z = 'Z',
+  Pitch = 'Pitch',
+  Roll = 'Roll',
+  Yaw = 'Yaw',
 }
