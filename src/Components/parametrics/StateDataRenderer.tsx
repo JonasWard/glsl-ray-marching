@@ -77,7 +77,7 @@ export const StateDataRenderer: React.FC<ISemtanticsRenderObjectProps> = ({
               />
             </ViewWrapper>
           );
-        if (value.hasOwnProperty('s') && value.hasOwnProperty('a'))
+        if (value.hasOwnProperty('s') && value.hasOwnProperty('v'))
           return (
             <DerivativeStateDataRenderer
               asSlider={asSlider}
