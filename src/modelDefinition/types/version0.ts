@@ -1,6 +1,6 @@
 import { DataEntryFactory } from 'url-safe-bitpacking';
 import { AttributeNames } from '../enums/attributeNames';
-import { ArrayEntryDataType, NestedContentType, OptionalEntryDataType, SingleLevelContentType } from 'url-safe-bitpacking/dist/types';
+import { ArrayEntryDataType, OptionalEntryDataType, SingleLevelContentType } from 'url-safe-bitpacking/dist/types';
 import { MainMethodLabels, PostProcessingMethodLabels } from './methodSemantics';
 
 const mainMethodVersionStack: ArrayEntryDataType = [
@@ -50,13 +50,30 @@ export const verionArrayDefinition0: SingleLevelContentType[] = [
         ],
       ],
       [
+        AttributeNames.WorldOrigin,
+        [
+          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.X),
+          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.Y),
+          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.Z),
+        ],
+      ],
+      [
+        AttributeNames.WorldEulerAngles,
+        [
+          DataEntryFactory.createFloat(0, -180, 180, 1, AttributeNames.Pitch),
+          DataEntryFactory.createFloat(0, -180, 180, 1, AttributeNames.Roll),
+          DataEntryFactory.createFloat(0, -180, 180, 1, AttributeNames.Yaw),
+        ],
+      ],
+      [
         AttributeNames.MousePosition,
         [
           DataEntryFactory.createFloat(0, 0, 360, 1, AttributeNames.Rotation),
           DataEntryFactory.createFloat(1, 0.001, 1000, 3, AttributeNames.ZoomLevel),
-          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.X),
-          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.Y),
-          DataEntryFactory.createFloat(1, -500, 500, 3, AttributeNames.Z),
+          [
+            AttributeNames.CenterCoordinate,
+            [DataEntryFactory.createFloat(0, -1, 1, 3, AttributeNames.PositionX), DataEntryFactory.createFloat(0, -1, 1, 3, AttributeNames.PositionY)],
+          ],
         ],
       ],
     ],
