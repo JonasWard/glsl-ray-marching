@@ -2,6 +2,7 @@ import { AttributeNames } from '../modelDefinition/enums/attributeNames';
 import preMethods from '../Shaders/tpmsPreProcessor.glsl?raw';
 import tpmsMethods from '../Shaders/tpmsMethodDefinitions.glsl?raw';
 import tpmsColors from '../Shaders/tpmsColorMethod.glsl?raw';
+import { Version0 } from '../modelDefinition/types/version0.generatedType';
 
 const handleColors = (data: any) => {
   const colorData = data[AttributeNames.Shmuck];
@@ -53,20 +54,20 @@ const getPreMethod = (data: any) => {
   return `locP = ${methodName}(locP, vec2(${width}, ${height}));`;
 };
 
-export const getDistanceMethod = (data: any) => {
-  const scale = (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.ZoomLevel].value;
-  const rotation = ((data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Rotation].value * Math.PI) / 180;
+export const getDistanceMethod = (data: Version0) => {
+  const scale = data[AttributeNames.Viewport][AttributeNames.MousePosition][AttributeNames.ZoomLevel].value;
+  const rotation = (data[AttributeNames.Viewport][AttributeNames.MousePosition][AttributeNames.Rotation].value * Math.PI) / 180;
   const position = [
-    (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.X].value,
-    (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Y].value,
-    (data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Z].value,
+    data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.X].value,
+    data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.Y].value,
+    data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.Z].value,
   ];
 
   const vec2Position = `vec2(${position[0].toFixed(3)},${position[1].toFixed(3)})`;
 
-  const mainMethod = getMainMethod((data[AttributeNames.Methods] as any)[AttributeNames.MainMethods]);
-  const preMethod = getPreMethod((data[AttributeNames.Methods] as any)[AttributeNames.PreProcessingMethods]);
-  const postMethod = getPostMethod((data[AttributeNames.Methods] as any)[AttributeNames.PostProcessingMethods]);
+  const mainMethod = getMainMethod(data[AttributeNames.Methods][AttributeNames.MainMethods]);
+  const preMethod = getPreMethod(data[AttributeNames.Methods][AttributeNames.PreProcessingMethods]);
+  const postMethod = getPostMethod(data[AttributeNames.Methods][AttributeNames.PostProcessingMethods]);
 
   return `
 ${mainMethod}
