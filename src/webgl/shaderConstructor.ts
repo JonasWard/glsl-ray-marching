@@ -2,7 +2,7 @@ import { AttributeNames } from '../modelDefinition/enums/attributeNames';
 import preMethods from '../Shaders/tpmsPreProcessor.glsl?raw';
 import tpmsMethods from '../Shaders/tpmsMethodDefinitions.glsl?raw';
 import tpmsColors from '../Shaders/tpmsColorMethod.glsl?raw';
-import { Version0 } from '../modelDefinition/types/version0.generatedType';
+import { Version0Type } from '../modelDefinition/types/version0.generatedType';
 
 const handleColors = (data: any) => {
   const colorData = data[AttributeNames.Shmuck];
@@ -54,7 +54,7 @@ const getPreMethod = (data: any) => {
   return `locP = ${methodName}(locP, vec2(${width}, ${height}));`;
 };
 
-export const getDistanceMethod = (data: Version0) => {
+export const getDistanceMethod = (data: Version0Type) => {
   const scale = data[AttributeNames.Viewport][AttributeNames.MousePosition][AttributeNames.ZoomLevel].value;
   const rotation = (data[AttributeNames.Viewport][AttributeNames.MousePosition][AttributeNames.Rotation].value * Math.PI) / 180;
   const position = [

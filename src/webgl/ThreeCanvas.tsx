@@ -6,6 +6,8 @@ import { parserObjects } from '../modelDefinition/model';
 import { ShaderMaterial } from 'three';
 import { getFragmentShader } from './shaderConstructor';
 import vsSource from 'src/Shaders/tpmsVertexShader.glsl?raw';
+import { DataEntry } from 'url-safe-bitpacking';
+import { Version0Type } from '../modelDefinition/types/version0.generatedType';
 
 const size = 1000;
 
@@ -49,7 +51,11 @@ const Plane = (...props: any) => {
   );
 };
 
-export const ThreeCanvas: React.FC<{ canvasRef: LegacyRef<HTMLCanvasElement> }> = ({ canvasRef }) => {
+export const ThreeCanvas: React.FC<{
+  canvasRef: LegacyRef<HTMLCanvasElement>;
+  updateEntry: (update: DataEntry | DataEntry[]) => void;
+  renderData: Version0Type;
+}> = ({ canvasRef, updateEntry, renderData }) => {
   const data = useData((s) => s.data);
 
   const [width, setWidth] = useState('100%');
@@ -59,13 +65,9 @@ export const ThreeCanvas: React.FC<{ canvasRef: LegacyRef<HTMLCanvasElement> }> 
     const zoomEntry = (useData.getState().data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.ZoomLevel];
     const rotateEntry = (useData.getState().data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Rotation];
 
-    if (zoomScale) useData.getState().setData(parserObjects.updater(useData.getState().data, { ...zoomEntry, value: zoomEntry.value * zoomScale }));
+    if (zoomScale) useData.getState().updateDataEntryNonThrottled({ ...zoomEntry, value: zoomEntry.value * zoomScale });
     if (rotateAngle)
-      useData
-        .getState()
-        .setData(
-          parserObjects.updater(useData.getState().data, { ...rotateEntry, value: (rotateEntry.value + rotateAngle + rotateEntry.max) % rotateEntry.max })
-        );
+      useData.getState().updateDataEntryNonThrottled({ ...rotateEntry, value: (rotateEntry.value + rotateAngle + rotateEntry.max) % rotateEntry.max });
   };
 
   const handleWidthHeight = () => {
@@ -107,7 +109,7 @@ export const ThreeCanvas: React.FC<{ canvasRef: LegacyRef<HTMLCanvasElement> }> 
       camera={{ zoom: 100, position: [0, 0, 1] }}
       style={{ width, height }}
     >
-      <Plane data={data} />
+      <Plane data={renderData} />
     </Canvas>
   );
 };

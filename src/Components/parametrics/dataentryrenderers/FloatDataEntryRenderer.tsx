@@ -22,6 +22,7 @@ export const FloatDataEntryRenderer: React.FC<IFloatDataEntryRendererProps> = ({
       min={customMin ?? float.min}
       max={customMax ?? float.max}
       precision={float.precision}
+      bits={float.significand}
     />
   ) : (
     <InputNumber

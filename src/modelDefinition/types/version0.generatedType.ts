@@ -6,7 +6,7 @@ type ColorType = {
   ['B']: { value: number; name: 'B'; type: DataType.INT; min: 0; max: 255; bits: 8 };
 };
 
-export type Version0 = {
+export type Version0Type = {
   ['Viewport']: {
     ['Canvas Full Screen']:
       | {

@@ -1,71 +1,64 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './App.css';
 import { parserObjects } from './modelDefinition/model';
 import { ParametricInput } from './Components/parametrics/ParametricInput';
-import { DataEntry, StateDataType } from 'url-safe-bitpacking';
+import { DataEntry } from 'url-safe-bitpacking';
 import { versionEnumSemantics } from './modelDefinition/types/semantics';
 import { useData } from './state';
 import { ThreeCanvas } from './webgl/ThreeCanvas';
 import { useParams } from 'react-router-dom';
 import { Button, message } from 'antd';
 import { LiaFileDownloadSolid } from 'react-icons/lia';
+import { useDebounce } from 'use-debounce';
+import { Version0Type } from './modelDefinition/types/version0.generatedType';
 
 const defaultState = 'C9KEPShD0oQ4Q4Q4QAAAGuPofRAOEAcIgBCpQDnoLEsLD_gAB_gABc2Nj_gAASBQVoqI0';
 
+const isIOS = () => {
+  return (
+    ['iPad Simulator', 'iPhone Simulator', 'iPod Simulator', 'iPad', 'iPhone', 'iPod'].includes(navigator.platform) ||
+    // iPad on iOS 13 detection
+    (navigator.userAgent.includes('Mac') && 'ontouchend' in document)
+  );
+};
+
 export const App: React.FC = () => {
   const { stateString } = useParams();
+  const [renderData] = useDebounce(useData.getState().data, isIOS() ? 50 : 0);
   const data = useData((s) => s.data);
-  const [localDataState, setLocalDataState] = useState(data);
+  const updateEntry = useData((s) => s.updateDataEntry);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  React.useEffect(() => {
-    const delayInputTimeoutId = setTimeout(() => {
-      setDebouncedInputValue(localDataState);
-    }, 50);
-    return () => clearTimeout(delayInputTimeoutId);
-  }, [localDataState, 50]);
+  useEffect(() => {
+    window.history.replaceState(null, 'Same Page Title', `/glsl-ray-marching/#${parserObjects.stringify(renderData)}`);
+  }, [renderData]);
 
   useEffect(() => {
-    window.history.replaceState(null, 'Same Page Title', `/glsl-ray-marching/#${parserObjects.stringify(data)}`);
-  }, [data]);
+    useData.setState({
+      updateDataEntry: (update: DataEntry | DataEntry[]): void => useData.getState().setData(parserObjects.updater(useData.getState().data, update)),
+    });
 
-  useEffect(() => {
     if (stateString) {
       try {
-        const initData = parserObjects.parser(stateString);
-        setLocalDataState(initData);
-        useData.getState().setData(initData);
+        useData.getState().setData(parserObjects.parser(stateString));
       } catch (e) {
         try {
-          const initData = parserObjects.parser(defaultState);
-          setLocalDataState(initData);
-          useData.getState().setData(initData);
+          useData.getState().setData(parserObjects.parser(defaultState));
           message.warning('the state string you tried to use was not valid, using the default state instead');
         } catch (e) {
-          const initData = parserObjects.parser();
-          setLocalDataState(initData);
-          useData.getState().setData(initData);
+          useData.getState().setData(parserObjects.parser());
           message.error('the default!! state string was not valid, using the default object state instead');
         }
       }
     } else {
       try {
-        const initData = parserObjects.parser(defaultState);
-        setLocalDataState(initData);
-        useData.getState().setData(initData);
-        message.warning('the state string you tried to use was not valid, using the default state instead');
+        useData.getState().setData(parserObjects.parser(defaultState));
       } catch (e) {
-        const initData = parserObjects.parser();
-        setLocalDataState(initData);
-        useData.getState().setData(initData);
+        useData.getState().setData(parserObjects.parser());
         message.error('the default!! state string was not valid, using the default object state instead');
       }
     }
   }, []);
-
-  const setDebouncedInputValue = (newData: StateDataType) => useData.getState().setData(newData);
-
-  const updateEntry = (update: DataEntry | DataEntry[]): void => setLocalDataState(parserObjects.updater(localDataState, update));
 
   const downloadPNG = () => {
     if (!canvasRef.current) return;
@@ -77,8 +70,8 @@ export const App: React.FC = () => {
 
   return (
     <>
-      <ThreeCanvas canvasRef={canvasRef} />
-      <ParametricInput data={localDataState} updateEntry={updateEntry} versionEnumSemantics={versionEnumSemantics} />
+      <ThreeCanvas renderData={renderData as any as Version0Type} canvasRef={canvasRef} updateEntry={updateEntry} />
+      <ParametricInput data={data} updateEntry={updateEntry} versionEnumSemantics={versionEnumSemantics} />
       <Button style={{ position: 'fixed', top: '15px', right: '15px' }} onClick={downloadPNG}>
         <LiaFileDownloadSolid style={{ position: 'absolute', width: 20, height: 20 }} size={16} />
       </Button>

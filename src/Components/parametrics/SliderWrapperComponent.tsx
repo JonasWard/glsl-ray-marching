@@ -1,5 +1,6 @@
 import { Slider } from 'antd';
 import React, { ReactNode } from 'react';
+import { FloatDataEntry } from 'url-safe-bitpacking/dist/types';
 
 const LogarithmicSlider: React.FC<{ value: number; setValue: (v: number) => void; min?: number; precision?: number; max?: number; valueBefore?: string }> = ({
   min = -5,
@@ -24,12 +25,7 @@ const LogarithmicSlider: React.FC<{ value: number; setValue: (v: number) => void
   );
 };
 
-const isLogaritmic = (min: number, max: number, precision: number) => {
-  const lMax = Math.log10(max || 10 ** precision);
-  const lMin = Math.log10(min || 10 ** precision);
-
-  return Math.abs(lMax - lMin) > 3;
-};
+const isLogaritmic = (bits: number) => bits > 16;
 
 export const SliderWrapper: React.FC<{
   icon: ReactNode;
@@ -39,7 +35,8 @@ export const SliderWrapper: React.FC<{
   max: number;
   step: number;
   precision: number;
-}> = ({ value, onChange, min, max, step, icon, precision }) => {
+  bits: number;
+}> = ({ value, onChange, min, max, step, icon, precision, bits }) => {
   return value || value === 0 ? (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', width: '100%' }}>
@@ -54,7 +51,7 @@ export const SliderWrapper: React.FC<{
           onChange={(e) => onChange(Number(e.target.value))}
         ></input>
       </div>
-      {isLogaritmic(min, max, precision) ? (
+      {isLogaritmic(bits) ? (
         <LogarithmicSlider value={value} setValue={onChange} min={min} max={max} precision={precision} />
       ) : (
         <Slider style={{ width: '100%', margin: '5px 0' }} value={value} onChange={onChange} min={min} max={max} />

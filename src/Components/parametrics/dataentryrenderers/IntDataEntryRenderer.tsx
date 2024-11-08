@@ -24,6 +24,7 @@ export const IntDataEntryRenderer: React.FC<IIntDataEntryRendererProps> = ({ int
           min={customMin ?? int.min}
           max={customMax ?? int.max}
           precision={0}
+          bits={int.bits}
         />
       );
     case 'input':
