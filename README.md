@@ -1,17 +1,8 @@
-# This is a bun project
+# glsl-ray-marching
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a POC for a configurators which stores it's whole state in the URL.
+An antd based UI is used to handle the url-safe-bitpacking StateDataModel.
 
-## Available Scripts
+## Pattern Generator
 
-In the project directory, you can run:
-
-### `bun start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-# chocolade chaud!
+This the latest iteration on a SDF based pattern generator.
