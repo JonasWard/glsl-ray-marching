@@ -61,13 +61,15 @@ export const ThreeCanvas: React.FC<{
   const [width, setWidth] = useState('100%');
   const [height, setHeight] = useState('100%');
 
-  const handleZoomAndRotation = (zoomScale?: number, rotateAngle?: number) => {
+  const handleZoomAndRotation = (zoomScale?: number, rotateAngle?: number, currentMousePosition?: { x: number; y: number }) => {
     const zoomEntry = (useData.getState().data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.ZoomLevel];
     const rotateEntry = (useData.getState().data[AttributeNames.Viewport] as any)[AttributeNames.MousePosition][AttributeNames.Rotation];
 
-    if (zoomScale) useData.getState().updateDataEntryNonThrottled({ ...zoomEntry, value: zoomEntry.value * zoomScale });
-    if (rotateAngle)
-      useData.getState().updateDataEntryNonThrottled({ ...rotateEntry, value: (rotateEntry.value + rotateAngle + rotateEntry.max) % rotateEntry.max });
+    const entriesToUpdate: DataEntry[] = [];
+    if (zoomScale) entriesToUpdate.push({ ...zoomEntry, value: zoomEntry.value * zoomScale });
+    if (rotateAngle) entriesToUpdate.push({ ...rotateEntry, value: (rotateEntry.value + rotateAngle + rotateEntry.max) % rotateEntry.max });
+
+    if (entriesToUpdate.length) useData.getState().updateDataEntryNonThrottled(entriesToUpdate);
   };
 
   const handleWidthHeight = () => {

@@ -54,16 +54,35 @@ const getPreMethod = (data: any) => {
   return `locP = ${methodName}(locP, vec2(${width}, ${height}));`;
 };
 
+const getViewPortDimensions = (data: Version0Type) => {
+  const width = data[AttributeNames.Viewport][AttributeNames.CanvasFullScreen].s.value
+    ? window.innerWidth
+    : (data[AttributeNames.Viewport][AttributeNames.CanvasFullScreen].v as any)[AttributeNames.CanvasWidth].value;
+  const height = data[AttributeNames.Viewport][AttributeNames.CanvasFullScreen].s.value
+    ? window.innerHeight
+    : (data[AttributeNames.Viewport][AttributeNames.CanvasFullScreen].v as any)[AttributeNames.CanvasHeight].value;
+
+  return { width, height };
+};
+
 export const getDistanceMethod = (data: Version0Type) => {
   const scale = data[AttributeNames.Viewport][AttributeNames.MousePosition][AttributeNames.ZoomLevel].value;
   const rotation = (data[AttributeNames.Viewport][AttributeNames.MousePosition][AttributeNames.Rotation].value * Math.PI) / 180;
-  const position = [
-    data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.X].value,
-    data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.Y].value,
-    data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.Z].value,
-  ];
+  const worldOrigin = {
+    x: data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.X].value,
+    y: data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.Y].value,
+    z: data[AttributeNames.Viewport][AttributeNames.WorldOrigin][AttributeNames.Z].value,
+  };
+  const worldAngles = {
+    pitch: data[AttributeNames.Viewport][AttributeNames.WorldEulerAngles][AttributeNames.Pitch].value,
+    roll: data[AttributeNames.Viewport][AttributeNames.WorldEulerAngles][AttributeNames.Roll].value,
+    yan: data[AttributeNames.Viewport][AttributeNames.WorldEulerAngles][AttributeNames.Yaw].value,
+  };
 
-  const vec2Position = `vec2(${position[0].toFixed(3)},${position[1].toFixed(3)})`;
+  const { width, height } = getViewPortDimensions(data);
+  const screencenter = { x: width * 0.5, y: height * 0.5 };
+
+  const vec2Position = `vec2(${worldOrigin.x.toFixed(3)},${worldOrigin.y.toFixed(3)})`;
 
   const mainMethod = getMainMethod(data[AttributeNames.Methods][AttributeNames.MainMethods]);
   const preMethod = getPreMethod(data[AttributeNames.Methods][AttributeNames.PreProcessingMethods]);
@@ -73,7 +92,7 @@ export const getDistanceMethod = (data: Version0Type) => {
 ${mainMethod}
 
 float getDistance(vec3 p) {
-  vec3 locP = vec3((${vec2Position} + rotate(p.xy * ${scale.toFixed(3)} - ${vec2Position}, ${rotation.toFixed(3)}) ), ${position[2].toFixed(3)});
+  vec3 locP = vec3((${vec2Position} + rotate(p.xy * ${scale.toFixed(3)} - ${vec2Position}, ${rotation.toFixed(3)}) ), ${worldOrigin.z.toFixed(3)});
   ${preMethod}
   float d = getMainDistance(locP);
   ${postMethod}
